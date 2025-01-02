@@ -14,7 +14,7 @@ def icon(emoji: str):
     )
 
 
-icon("🏎️")
+icon("🤖")
 
 st.subheader("Groq Chat Streamlit App", divider="rainbow", anchor=False)
 
@@ -65,7 +65,7 @@ with col2:
         # Default value or max allowed if less
         value=min(32768, max_tokens_range),
         step=512,
-        help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
+        help=f" HEY TOKENS ANTE WORDS.Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
     )
 
 # Display chat messages from history on app rerun
