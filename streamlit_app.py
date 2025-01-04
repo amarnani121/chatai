@@ -45,7 +45,7 @@ with col1:
         "Choose a model:",
         options=list(models.keys()),
         format_func=lambda x: models[x]["name"],
-        index=8  # Default to mixtral
+        index=0  # Default to mixtral
     )
 
 # Detect model change and clear chat history if model has changed
