@@ -8,7 +8,7 @@ def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
     st.write(f'<span style="font-size: 78px; line-height: 1">{emoji}</span>', unsafe_allow_html=True)
 
-icon("🤖 amar's Ai")
+icon("🤖 Amar's Ai")
 
 st.subheader("Chat with my fastest Ai 🚀", divider="rainbow", anchor=False)
 
@@ -32,8 +32,8 @@ models = {
     "mixtral-8x7b-32768": {"name": "Mixtral-8x7b-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
 }
 
-# Behavior options
-behaviors = ["Formal", "Casual", "Funny"]
+# Extended behavior options
+behaviors = ["Formal", "Casual", "Funny", "Tech Fact", "Technical Expert", "Jarvis-Like Negotiation"]
 
 # Layout for model and behavior selection
 col1, col2 = st.columns(2)
@@ -43,7 +43,7 @@ with col1:
         "Choose a model:",
         options=list(models.keys()),
         format_func=lambda x: models[x]["name"],
-        index=0  # Default to mixtral
+        index=0  # Default to first model
     )
 
 # Detect model change and clear chat history if model has changed
@@ -56,7 +56,7 @@ max_tokens_range = models[model_option]["tokens"]
 with col2:
     max_tokens = st.slider(
         "Max Tokens:",
-        min_value=512,  # Minimum value to allow some flexibility
+        min_value=512,
         max_value=max_tokens_range,
         value=min(32768, max_tokens_range),
         step=512,
@@ -85,7 +85,10 @@ for message in st.session_state.messages:
 behavior_map = {
     "Formal": "You are an assistant that responds in a formal and professional tone.",
     "Casual": "You are an assistant that responds in a casual and friendly tone.",
-    "Funny": "You are an assistant that responds with humor and lightheartedness."
+    "Funny": "You are an assistant that responds with humor and lightheartedness.",
+    "Tech Fact": "You are an assistant focused on providing concise, fascinating, and accurate technical facts about a wide range of topics, from computer science to emerging technologies.",
+    "Technical Expert": "You are an assistant that responds as a highly skilled technical expert, offering in-depth, precise, and technical explanations suitable for advanced users and professionals.",
+    "Jarvis-Like Negotiation": "You are a negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
 }
 
 # Generate the system message for the selected behavior
@@ -128,7 +131,6 @@ if prompt := st.chat_input("Enter your prompt here..."):
         st.session_state.messages.append(
             {"role": "assistant", "content": full_response})
     else:
-        # Handle the case where full_response is not a string
         combined_response = "\n".join(str(item) for item in full_response)
         st.session_state.messages.append(
             {"role": "assistant", "content": combined_response})
