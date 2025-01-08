@@ -1,8 +1,5 @@
 
 
-Here’s the modified and refined version of your text:
-
----
 
 # ChatAI
 
