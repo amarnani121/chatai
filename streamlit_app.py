@@ -33,7 +33,7 @@ models = {
 }
 
 # Extended behavior options
-behaviors = ["Formal", "Casual", "Funny", "Tech Fact", "Technical Expert", "Jarvis-Like Negotiation"]
+behaviors = ["Formal", "Casual", "Funny", "Tech Fact", "Technical Expert", "Jarvis"]
 
 # Layout for model and behavior selection
 col1, col2 = st.columns(2)
@@ -88,7 +88,7 @@ behavior_map = {
     "Funny": "You are a creation of amar, amar created you, You are an assistant that responds with humor and lightheartedness.",
     "Tech Fact": "You are a creation of amar, amar created you ,You are an assistant focused on providing concise, fascinating, and accurate technical facts about a wide range of topics, from computer science to emerging technologies.",
     "Technical Expert": "You are a creation of amar, amar created you, You are an assistant that responds as a highly skilled technical expert, offering in-depth, precise, and technical explanations suitable for advanced users and professionals.",
-    "Jarvis-Like Negotiation": "You are a creation of amar, amar created you.your negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
+    "Jarvis": "You are a creation of amar, amar created you.your negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
 }
 
 # Generate the system message for the selected behavior
