@@ -126,4 +126,9 @@ if prompt := st.chat_input("Enter your prompt here..."):
     # Append the full response to session_state.messages
     if isinstance(full_response, str):
         st.session_state.messages.append(
-           
+            {"role": "assistant", "content": full_response})
+    else:
+        # Handle the case where full_response is not a string
+        combined_response = "\n".join(str(item) for item in full_response)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": combined_response})
