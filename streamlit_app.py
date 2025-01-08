@@ -2,25 +2,17 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
-st.set_page_config(page_icon="🚀", layout="wide",
-                   page_title="Brrroooo...")
-
+st.set_page_config(page_icon="🚀", layout="wide", page_title="Brrroooo...")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
-    st.write(
-        f'<span style="font-size: 78px; line-height: 1">{emoji}</span>',
-        unsafe_allow_html=True,
-    )
-
+    st.write(f'<span style="font-size: 78px; line-height: 1">{emoji}</span>', unsafe_allow_html=True)
 
 icon("🤖 amar's Ai")
 
 st.subheader("Chat with my fastest Ai 🚀", divider="rainbow", anchor=False)
 
-client = Groq(
-    api_key=st.secrets["GROQ_API_KEY"],
-)
+client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
 # Initialize chat history and selected model
 if "messages" not in st.session_state:
@@ -28,6 +20,9 @@ if "messages" not in st.session_state:
 
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
+
+if "selected_behavior" not in st.session_state:
+    st.session_state.selected_behavior = "Formal"  # Default behavior
 
 # Define model details
 models = {
@@ -37,7 +32,10 @@ models = {
     "mixtral-8x7b-32768": {"name": "Mixtral-8x7b-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
 }
 
-# Layout for model selection and max_tokens slider
+# Behavior options
+behaviors = ["Formal", "Casual", "Funny"]
+
+# Layout for model and behavior selection
 col1, col2 = st.columns(2)
 
 with col1:
@@ -56,23 +54,42 @@ if st.session_state.selected_model != model_option:
 max_tokens_range = models[model_option]["tokens"]
 
 with col2:
-    # Adjust max_tokens slider dynamically based on the selected model
     max_tokens = st.slider(
         "Max Tokens:",
         min_value=512,  # Minimum value to allow some flexibility
         max_value=max_tokens_range,
-        # Default value or max allowed if less
         value=min(32768, max_tokens_range),
         step=512,
-        help=f" HEY TOKENS ANTE WORDS.Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
+        help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
     )
 
-# Display chat messages from history on app rerun
+# Add behavior selector
+behavior_option = st.selectbox(
+    "Choose the assistant's behavior:",
+    options=behaviors,
+    index=behaviors.index(st.session_state.selected_behavior)
+)
+
+# Update behavior in session state
+if st.session_state.selected_behavior != behavior_option:
+    st.session_state.selected_behavior = behavior_option
+    st.session_state.messages = []  # Reset messages on behavior change
+
+# Display chat messages from history
 for message in st.session_state.messages:
     avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
+# Define system message based on the selected behavior
+behavior_map = {
+    "Formal": "You are an assistant that responds in a formal and professional tone.",
+    "Casual": "You are an assistant that responds in a casual and friendly tone.",
+    "Funny": "You are an assistant that responds with humor and lightheartedness."
+}
+
+# Generate the system message for the selected behavior
+system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
     """Yield chat response content from the Groq API response."""
@@ -91,12 +108,8 @@ if prompt := st.chat_input("Enter your prompt here..."):
     try:
         chat_completion = client.chat.completions.create(
             model=model_option,
-            messages=[
-                {
-                    "role": m["role"],
-                    "content": m["content"]
-                }
-                for m in st.session_state.messages
+            messages=[system_message] + [
+                {"role": m["role"], "content": m["content"]} for m in st.session_state.messages
             ],
             max_tokens=max_tokens,
             stream=True
@@ -106,15 +119,11 @@ if prompt := st.chat_input("Enter your prompt here..."):
         with st.chat_message("assistant", avatar="🤖"):
             chat_responses_generator = generate_chat_responses(chat_completion)
             full_response = st.write_stream(chat_responses_generator)
+
     except Exception as e:
         st.error(e, icon="🚨")
 
     # Append the full response to session_state.messages
     if isinstance(full_response, str):
         st.session_state.messages.append(
-            {"role": "assistant", "content": full_response})
-    else:
-        # Handle the case where full_response is not a string
-        combined_response = "\n".join(str(item) for item in full_response)
-        st.session_state.messages.append(
-            {"role": "assistant", "content": combined_response})
+           
