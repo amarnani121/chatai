@@ -88,6 +88,4 @@ We welcome contributions to improve ChatAI! To contribute:
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
----
 
-This version maintains clarity, adds slight formatting improvements, and ensures concise yet detailed instructions.
