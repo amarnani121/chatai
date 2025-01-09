@@ -2,15 +2,15 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
-st.set_page_config(page_icon="🚀", layout="wide", page_title="Brrroooo...")
+st.set_page_config(page_icon="🚀", layout="centered", page_title="Brrroooo... Mobile View")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
-    st.write(f'<span style="font-size: 78px; line-height: 1">{emoji}</span>', unsafe_allow_html=True)
+    st.write(f'<span style="font-size: 48px; line-height: 1">{emoji}</span>', unsafe_allow_html=True)
 
 icon("🤖 Amar's Ai")
 
-st.subheader("Chat with my fastest Ai 🚀", divider="rainbow", anchor=False)
+st.markdown("<h3 style='text-align: center;'>Chat with my fastest Ai 🚀</h3>", unsafe_allow_html=True)
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
@@ -35,16 +35,13 @@ models = {
 # Extended behavior options
 behaviors = ["Formal", "Casual", "Funny", "Tech Fact", "Technical Expert", "Jarvis"]
 
-# Layout for model and behavior selection
-col1, col2 = st.columns(2)
-
-with col1:
-    model_option = st.selectbox(
-        "Choose a model:",
-        options=list(models.keys()),
-        format_func=lambda x: models[x]["name"],
-        index=0  # Default to first model
-    )
+# Model and behavior selection
+model_option = st.selectbox(
+    "Choose a model:",
+    options=list(models.keys()),
+    format_func=lambda x: models[x]["name"],
+    index=0  # Default to first model
+)
 
 # Detect model change and clear chat history if model has changed
 if st.session_state.selected_model != model_option:
@@ -53,17 +50,15 @@ if st.session_state.selected_model != model_option:
 
 max_tokens_range = models[model_option]["tokens"]
 
-with col2:
-    max_tokens = st.slider(
-        "Max Tokens:",
-        min_value=512,
-        max_value=max_tokens_range,
-        value=min(32768, max_tokens_range),
-        step=512,
-        help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
-    )
+max_tokens = st.slider(
+    "Max Tokens:",
+    min_value=512,
+    max_value=max_tokens_range,
+    value=min(32768, max_tokens_range),
+    step=512,
+    help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
+)
 
-# Add behavior selector
 behavior_option = st.selectbox(
     "Choose the assistant's behavior:",
     options=behaviors,
@@ -79,7 +74,7 @@ if st.session_state.selected_behavior != behavior_option:
 for message in st.session_state.messages:
     avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
     with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(message["content"])
+        st.markdown(message["content"], unsafe_allow_html=True)
 
 # Define system message based on the selected behavior
 behavior_map = {
@@ -88,7 +83,7 @@ behavior_map = {
     "Funny": "You are a creation of amar, amar created you, You are an assistant that responds with humor and lightheartedness.",
     "Tech Fact": "You are a creation of amar, amar created you ,You are an assistant focused on providing concise, fascinating, and accurate technical facts about a wide range of topics, from computer science to emerging technologies.",
     "Technical Expert": "You are a creation of amar, amar created you, You are an assistant that responds as a highly skilled technical expert, offering in-depth, precise, and technical explanations suitable for advanced users and professionals.",
-    "Jarvis": "You are a creation of amar, amar created you.your negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
+    "Jarvis": "You are a creation of amar, amar created you. You are a negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
 }
 
 # Generate the system message for the selected behavior
@@ -100,8 +95,7 @@ def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 
-
-if prompt := st.chat_input("Enter your prompt here..."):
+if prompt := st.text_input("Enter your prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user", avatar='👨‍💻'):
