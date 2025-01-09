@@ -47,16 +47,10 @@ with st.container():
             index=0  # Default to first model
         )
 
-    with col2:
-        max_tokens_range = models[model_option]["tokens"]
-        max_tokens = st.slider(
-            "Max Tokens:",
-            min_value=512,
-            max_value=max_tokens_range,
-            value=min(32768, max_tokens_range),
-            step=512,
-            help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
-        )
+    # Hide the Max Tokens slider by not including it in the layout
+    # Set max_tokens directly
+    max_tokens_range = models[model_option]["tokens"]
+    max_tokens = max_tokens_range  # Always use the max token for the selected model
 
 # Detect model change and clear chat history if model has changed
 if st.session_state.selected_model != model_option:
