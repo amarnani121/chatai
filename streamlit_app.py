@@ -124,3 +124,15 @@ if prompt := st.chat_input("Enter your prompt here..."):
         combined_response = "\n".join(str(item) for item in full_response)
         st.session_state.messages.append(
             {"role": "assistant", "content": combined_response})
+
+# Button to reveal Max Token adjustment (optional for users)
+if st.button("Adjust Max Tokens"):
+    with st.expander("Max Tokens Adjustment"):
+        max_tokens = st.slider(
+            "Max Tokens:",
+            min_value=512,
+            max_value=models[model_option]["tokens"],
+            value=max_tokens,
+            step=512,
+            help="Adjust the maximum number of tokens for the model's response."
+        )
