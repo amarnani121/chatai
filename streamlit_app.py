@@ -2,13 +2,13 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
-st.set_page_config(page_icon="🚀", layout="centered", page_title="Brrroooo...")
+st.set_page_config(page_icon="🚀", layout="centered", page_title="Let’s Talk with Amar’s AI")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
 
-icon("⚡ Amar's Ai")
+icon("⚡Amar's Ai")
 
 st.markdown("<h3 style='text-align: center;'>Chat with my fastest Ai 🚀</h3>", unsafe_allow_html=True)
 
