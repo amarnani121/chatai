@@ -2,11 +2,11 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
-st.set_page_config(page_icon="🚀", layout="centered", page_title="Brrroooo... Mobile View")
+st.set_page_config(page_icon="🚀", layout="centered", page_title="Brrroooo...")
 
 def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
-    st.write(f'<span style="font-size: 48px; line-height: 1">{emoji}</span>', unsafe_allow_html=True)
+    st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
 
 icon("🤖 Amar's Ai")
 
@@ -35,30 +35,35 @@ models = {
 # Extended behavior options
 behaviors = ["Formal", "Casual", "Funny", "Tech Fact", "Technical Expert", "Jarvis"]
 
-# Model and behavior selection
-model_option = st.selectbox(
-    "Choose a model:",
-    options=list(models.keys()),
-    format_func=lambda x: models[x]["name"],
-    index=0  # Default to first model
-)
+# Adjusted layout for mobile screens
+with st.container():
+    col1, col2 = st.columns([1, 1])  # Equal-width columns for mobile screens
+
+    with col1:
+        model_option = st.selectbox(
+            "Choose a model:",
+            options=list(models.keys()),
+            format_func=lambda x: models[x]["name"],
+            index=0  # Default to first model
+        )
+
+    with col2:
+        max_tokens_range = models[model_option]["tokens"]
+        max_tokens = st.slider(
+            "Max Tokens:",
+            min_value=512,
+            max_value=max_tokens_range,
+            value=min(32768, max_tokens_range),
+            step=512,
+            help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
+        )
 
 # Detect model change and clear chat history if model has changed
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
 
-max_tokens_range = models[model_option]["tokens"]
-
-max_tokens = st.slider(
-    "Max Tokens:",
-    min_value=512,
-    max_value=max_tokens_range,
-    value=min(32768, max_tokens_range),
-    step=512,
-    help=f"Adjust the maximum number of tokens (words) for the model's response. Max for selected model: {max_tokens_range}"
-)
-
+# Add behavior selector
 behavior_option = st.selectbox(
     "Choose the assistant's behavior:",
     options=behaviors,
@@ -74,7 +79,7 @@ if st.session_state.selected_behavior != behavior_option:
 for message in st.session_state.messages:
     avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
     with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(message["content"], unsafe_allow_html=True)
+        st.markdown(message["content"])
 
 # Define system message based on the selected behavior
 behavior_map = {
@@ -95,7 +100,7 @@ def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 
-if prompt := st.text_input("Enter your prompt here..."):
+if prompt := st.chat_input("Enter your prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user", avatar='👨‍💻'):
