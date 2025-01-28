@@ -30,14 +30,10 @@ models = {
     "llama3-70b-8192": {"name": "LLaMA3-70B-8192", "tokens": 8192, "developer": "Meta"},
     "llama3-8b-8192": {"name": "LLaMA3-8B-8192", "tokens": 8192, "developer": "Meta"},
     "mixtral-8x7b-32768": {"name": "Mixtral-8x7B-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
-    "llama3-groq-70b-8192-tool-use-preview": {"name": "Llama-3-Groq-70B-Tool-Use", "tokens": 8192, "developer": "Groq"},
-    "llama3-groq-8b-8192-tool-use-preview": {"name": "Llama-3-Groq-8B-Tool-Use", "tokens": 8192, "developer": "Groq"},
     "llama-3.2-11b-text-preview": {"name": "Llama-3.2-11B-Text-Preview", "tokens": 8192, "developer": "Meta"},
-    "llama-3.1-70b-versatile": {"name": "Llama-3.1-70B-Versatile", "tokens": 32768, "developer": "Meta"},
     "llama-3.2-3b-preview": {"name": "Llama-3.2-3B-Preview", "tokens": 8192, "developer": "Meta"},
     "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
-    "llama-3.2-90b-text-preview": {"name": "Llama-3.2-90B-Text-Preview", "tokens": 8192, "developer": "Meta"},
-    "llama-3.1-8b-instant": {"name": "Llama-3.1-8B-Instant", "tokens": 131072, "developer": "Meta"},
+
 }
 
 # Extended behavior options
