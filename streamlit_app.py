@@ -2,19 +2,21 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
+# Page configuration
 st.set_page_config(page_icon="🚀", layout="centered", page_title="Let’s Talk with Amar’s AI")
 
+# Icon function
 def icon(emoji: str):
-    """Shows an emoji as a Notion-style page icon."""
+    """Displays a custom emoji icon."""
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
 
 icon("⚡ Amar's AI")
-
 st.markdown("<h3 style='text-align: center;'>Chat with my fastest AI 🚀</h3>", unsafe_allow_html=True)
 
+# Initialize the Groq client
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# Initialize chat history and selected model
+# Initialize session state variables
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -35,7 +37,7 @@ models = {
     "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
 }
 
-# Behavior options
+# Define behaviors
 behaviors = [
     "Jarvis", 
     "Funny", 
@@ -56,11 +58,10 @@ with st.container():
             "Choose a model:",
             options=list(models.keys()),
             format_func=lambda x: models[x]["name"],
-            index=0
+            index=0  # Default model
         )
 
-    # Set max tokens directly
-    max_tokens = models[model_option]["tokens"]
+    max_tokens = models[model_option]["tokens"]  # Set max tokens directly
 
 # Reset chat history if model changes
 if st.session_state.selected_model != model_option:
@@ -71,7 +72,7 @@ if st.session_state.selected_model != model_option:
 behavior_option = st.selectbox(
     "Choose the assistant's behavior:",
     options=behaviors,
-    index=behaviors.index(st.session_state.selected_behavior) if "selected_behavior" in st.session_state else 0
+    index=behaviors.index(st.session_state.selected_behavior)
 )
 
 # Update session state for behavior
@@ -91,7 +92,7 @@ behavior_map = {
     "Concise Professional": "You are a concise and professional assistant, delivering clear, efficient, and no-nonsense responses."
 }
 
-# Generate the system message for the selected behavior
+# Generate the system message based on selected behavior
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
 # Display chat history
