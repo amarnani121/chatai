@@ -36,17 +36,7 @@ models = {
 }
 
 # Extended behavior options
-behaviors = [
-    "Funny", 
-    "Tech Buddy", 
-    "Teaching Expert", 
-    "Jarvis", 
-    "Empathetic Listener", 
-    "Energetic Motivator", 
-    "Concise Professional", 
-    "Storyteller", 
-    "Cultural Guide"
-]
+behaviors = ["Funny", "Tech Buddy", "Teaching Expert", "Jarvis", "Empathetic Listener", "Energetic Motivator", "Concise Professional", "Storyteller", "Cultural Guide"]
 
 
 # Adjusted layout for mobile screens
