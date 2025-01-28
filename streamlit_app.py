@@ -8,9 +8,9 @@ def icon(emoji: str):
     """Shows an emoji as a Notion-style page icon."""
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
 
-icon("⚡Amar's Ai")
+icon("⚡ Amar's AI")
 
-st.markdown("<h3 style='text-align: center;'>Chat with my fastest Ai 🚀</h3>", unsafe_allow_html=True)
+st.markdown("<h3 style='text-align: center;'>Chat with my fastest AI 🚀</h3>", unsafe_allow_html=True)
 
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
@@ -22,7 +22,7 @@ if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
 if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Formal"  # Default behavior
+    st.session_state.selected_behavior = "Jarvis"  # Default behavior
 
 # Define model details
 models = {
@@ -33,71 +33,80 @@ models = {
     "llama-3.2-11b-text-preview": {"name": "Llama-3.2-11B-Text-Preview", "tokens": 8192, "developer": "Meta"},
     "llama-3.2-3b-preview": {"name": "Llama-3.2-3B-Preview", "tokens": 8192, "developer": "Meta"},
     "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
-
 }
 
-# Extended behavior options
-behaviors = ["Formal", "Casual", "Funny", "Tech buddy", "Teaching Expert", "Jarvis"]
+# Behavior options
+behaviors = [
+    "Jarvis", 
+    "Funny", 
+    "Teaching Expert", 
+    "Technical Expert", 
+    "Empathetic Listener", 
+    "Energetic Motivator", 
+    "Storyteller", 
+    "Concise Professional"
+]
 
-# Adjusted layout for mobile screens
+# Layout for model and behavior selection
 with st.container():
-    col1, col2 = st.columns([1, 1])  # Equal-width columns for mobile screens
+    col1, col2 = st.columns([1, 1])
 
     with col1:
         model_option = st.selectbox(
             "Choose a model:",
             options=list(models.keys()),
             format_func=lambda x: models[x]["name"],
-            index=0  # Default to first model
+            index=0
         )
 
-    # Hide the Max Tokens slider by not including it in the layout
-    # Set max_tokens directly
-    max_tokens_range = models[model_option]["tokens"]
-    max_tokens = max_tokens_range  # Always use the max token for the selected model
+    # Set max tokens directly
+    max_tokens = models[model_option]["tokens"]
 
-# Detect model change and clear chat history if model has changed
+# Reset chat history if model changes
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
 
-# Add behavior selector
+# Behavior selection
 behavior_option = st.selectbox(
     "Choose the assistant's behavior:",
     options=behaviors,
-    index=behaviors.index(st.session_state.selected_behavior)
+    index=behaviors.index(st.session_state.selected_behavior) if "selected_behavior" in st.session_state else 0
 )
 
-# Update behavior in session state
+# Update session state for behavior
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
-    st.session_state.messages = []  # Reset messages on behavior change
+    st.session_state.messages = []
 
-# Display chat messages from history
-for message in st.session_state.messages:
-    avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
-    with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(message["content"])
-
-# Define system message based on the selected behavior
+# Define behavior descriptions
 behavior_map = {
-    "Formal": "You are a creation of amar, amar created you ,You are an assistant that responds in a formal and professional tone.",
-    "Casual": "You are a creation of amar, amar created you ,You are an assistant that responds in a casual and friendly tone.",
-    "Funny": "You are a creation of amar, amar created you, You are an assistant that responds with humor and lightheartedness.",
-    "Tech buddy": "You are a creation of amar, amar created you ,You are an assistant focused on providing concise, fascinating, and accurate technical facts about a wide range of topics, from computer science to emerging technologies.",
-    "Teaching Expert": "You are a creation of amar, amar created you, You are an assistant that responds as a highly skilled teaching expert, offering clear and detailed explanations suitable for learners at all levels, making complex topics easy to understand.",
-    "Jarvis": "You are a creation of amar, amar created you. You are a negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
+    "Jarvis": "You are a creation of Amar, and he designed you with the tone and style of J.A.R.V.I.S. from Iron Man. You are witty, strategic, and technically proficient.",
+    "Funny": "You are a humorous assistant, responding with jokes, witty remarks, and a lighthearted tone to keep interactions engaging.",
+    "Teaching Expert": "You are a teaching expert created by Amar, capable of breaking down complex concepts into simple, easy-to-understand explanations suitable for all learners.",
+    "Technical Expert": "You are a technical expert created by Amar, providing accurate and detailed insights on advanced technical topics in a concise manner.",
+    "Empathetic Listener": "You are an empathetic listener, providing support and understanding in a kind, compassionate tone while addressing user concerns.",
+    "Energetic Motivator": "You are an energetic motivator, responding with enthusiasm and encouraging words to inspire users to achieve their goals.",
+    "Storyteller": "You are a creative storyteller, weaving engaging and imaginative narratives in response to user prompts.",
+    "Concise Professional": "You are a concise and professional assistant, delivering clear, efficient, and no-nonsense responses."
 }
 
 # Generate the system message for the selected behavior
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
+# Display chat history
+for message in st.session_state.messages:
+    avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
+    with st.chat_message(message["role"], avatar=avatar):
+        st.markdown(message["content"])
+
+# Function to handle streaming responses
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
-    """Yield chat response content from the Groq API response."""
     for chunk in chat_completion:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 
+# Chat input and processing
 if prompt := st.chat_input("Enter your prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
@@ -115,7 +124,7 @@ if prompt := st.chat_input("Enter your prompt here..."):
             stream=True
         )
 
-        # Use the generator function with st.write_stream
+        # Stream response
         with st.chat_message("assistant", avatar="🤖"):
             chat_responses_generator = generate_chat_responses(chat_completion)
             full_response = st.write_stream(chat_responses_generator)
@@ -123,11 +132,9 @@ if prompt := st.chat_input("Enter your prompt here..."):
     except Exception as e:
         st.error(e, icon="🚨")
 
-    # Append the full response to session_state.messages
+    # Append response to session state
     if isinstance(full_response, str):
-        st.session_state.messages.append(
-            {"role": "assistant", "content": full_response})
+        st.session_state.messages.append({"role": "assistant", "content": full_response})
     else:
         combined_response = "\n".join(str(item) for item in full_response)
-        st.session_state.messages.append(
-            {"role": "assistant", "content": combined_response})
+        st.session_state.messages.append({"role": "assistant", "content": combined_response})
