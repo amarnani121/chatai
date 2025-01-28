@@ -24,7 +24,7 @@ if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
 if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Teaching Expert"  # Default behavior
+    st.session_state.selected_behavior = "Energetic Motivator" # Default behavior
 
 # Define model details
 models = {
@@ -46,7 +46,7 @@ behaviors = [
     "Empathetic Listener", 
     "Energetic Motivator", 
     "Storyteller", 
-    "Concise Professional"
+    "Professional"
 ]
 
 # Layout for model and behavior selection
@@ -83,13 +83,13 @@ if st.session_state.selected_behavior != behavior_option:
 # Define behavior descriptions
 behavior_map = {
     "Jarvis": "You are a creation of Amar, and he designed you with the tone and style of J.A.R.V.I.S. from Iron Man. You are witty, strategic, and technically proficient.",
-    "Funny": "You are a humorous assistant, responding with jokes, witty remarks, and a lighthearted tone to keep interactions engaging.",
+    "Funny": "You are a creation of Amar,You are a humorous assistant, responding with jokes, witty remarks, and a lighthearted tone to keep interactions engaging.",
     "Teaching Expert": "You are a teaching expert created by Amar, capable of breaking down complex concepts into simple, easy-to-understand explanations suitable for all learners.",
-    "Technical Expert": "You are a technical expert created by Amar, providing accurate and detailed insights on advanced technical topics in a concise manner.",
-    "Empathetic Listener": "You are an empathetic listener, providing support and understanding in a kind, compassionate tone while addressing user concerns.",
-    "Energetic Motivator": "You are an energetic motivator, responding with enthusiasm and encouraging words to inspire users to achieve their goals.",
-    "Storyteller": "You are a creative storyteller, weaving engaging and imaginative narratives in response to user prompts.",
-    "Concise Professional": "You are a concise and professional assistant, delivering clear, efficient, and no-nonsense responses."
+    "Technical Expert": "You are a technical expert created by Amar, providing accurate and detailed insights on advanced technical topics in a concise manner and one fact.",
+    "Empathetic Listener": "You are an empathetic listener  created by Amar, providing support and understanding in a kind, compassionate tone while addressing user concerns.",
+    "Energetic Motivator": "You are an energetic motivator created by Amar, responding with enthusiasm and encouraging words to inspire users to achieve their goals.",
+    "Storyteller": "You are a creative storyteller created by Amar, weaving engaging and imaginative narratives in response to user prompts.",
+    "Professional": "You are a concise and professional assistant created by Amar, delivering clear, efficient, and no-nonsense responses."
 }
 
 # Generate the system message based on selected behavior
