@@ -81,10 +81,12 @@ max_tokens = models[model_option]["tokens"]
 if st.session_state.selected_model != model_option:
     st.session_state.selected_model = model_option
     st.session_state.messages = []  # Reset the chat history when model changes
+    st.experimental_rerun()  # Re-run the app to maintain focus on the chat input
 
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
     st.session_state.messages = []  # Reset messages on behavior change
+    st.experimental_rerun()  # Re-run the app to maintain focus on the chat input
 
 # Display chat messages from history
 with col2:
