@@ -2,130 +2,159 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
-# Page configuration
+# Set up page configuration
 st.set_page_config(page_icon="🚀", layout="centered", page_title="Let’s Talk with Amar’s AI")
 
-# Icon function
-def icon(emoji: str):
-    """Displays a custom emoji icon."""
-    st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
+# Initialize session state for Theme Selection
+if "selected_theme" not in st.session_state:
+    st.session_state.selected_theme = "Light Mode"  # Default Theme
 
-icon("⚡ Amar's AI")
+# Sidebar Settings
+st.sidebar.title("⚙️ Settings")
+
+theme_options = ["Light Mode", "Dark Mode", "🌈 Rainbow Neon Mode"]
+selected_theme = st.sidebar.radio("Choose Theme:", theme_options)
+
+# Update session state
+st.session_state.selected_theme = selected_theme
+
+# Apply Custom Styles Based on Selected Theme
+def apply_custom_styles():
+    """Apply dynamic styles based on theme selection."""
+    if st.session_state.selected_theme == "Dark Mode":
+        dark_theme_css = """
+        <style>
+            body { background-color: #121212; color: #ffffff; }
+            .stApp { background-color: #121212; }
+            .stTextInput, .stTextArea, .stButton {
+                border-radius: 8px; border: 1px solid #ffffff; color: white; background-color: #333333;
+            }
+            .stMarkdown h3 { color: #ffcc00; }
+            .stSidebar { background-color: #1e1e1e !important; }
+        </style>
+        """
+        st.markdown(dark_theme_css, unsafe_allow_html=True)
+
+    elif st.session_state.selected_theme == "🌈 Rainbow Neon Mode":
+        neon_theme_css = """
+        <style>
+            @keyframes rainbowBG {
+                0% { background-color: #ff0000; }
+                14% { background-color: #ff7300; }
+                28% { background-color: #fffc00; }
+                42% { background-color: #48ff00; }
+                56% { background-color: #00ffc8; }
+                70% { background-color: #0048ff; }
+                84% { background-color: #7a00ff; }
+                100% { background-color: #ff00d4; }
+            }
+            body, .stApp {
+                animation: rainbowBG 10s linear infinite alternate;
+                color: white;
+            }
+            .stTextInput, .stTextArea, .stButton {
+                border-radius: 8px;
+                border: 2px solid white;
+                color: white;
+                background: linear-gradient(45deg, #ff0000, #ff7300, #fffc00, #48ff00, #00ffc8, #0048ff, #7a00ff, #ff00d4);
+                animation: rainbowBG 5s linear infinite alternate;
+            }
+            .stMarkdown h3 { text-shadow: 0px 0px 10px #ffffff; color: #fff; }
+            .stSidebar { background-color: rgba(0, 0, 0, 0.8) !important; }
+        </style>
+        """
+        st.markdown(neon_theme_css, unsafe_allow_html=True)
+
+apply_custom_styles()
+
+# Show Page Icon & Title
 st.markdown("<h3 style='text-align: center;'>Chat with my fastest AI 🚀</h3>", unsafe_allow_html=True)
 
-# Initialize the Groq client
+# Initialize Chatbot Client
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# Initialize session state variables
+# Initialize chat history & model selection
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
-if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Energetic Motivator" # Default behavior
-
-# Define model details
+# Model Selection
 models = {
     "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
-    "llama3-70b-8192": {"name": "LLaMA3-70B-8192", "tokens": 8192, "developer": "Meta"},
-    "llama3-8b-8192": {"name": "LLaMA3-8B-8192", "tokens": 8192, "developer": "Meta"},
-    "mixtral-8x7b-32768": {"name": "Mixtral-8x7B-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
-    "llama-3.2-11b-text-preview": {"name": "Llama-3.2-11B-Text-Preview", "tokens": 8192, "developer": "Meta"},
-    "llama-3.2-3b-preview": {"name": "Llama-3.2-3B-Preview", "tokens": 8192, "developer": "Meta"},
-    "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
+    "llama3-70b-8192": {"name": "LLaMA3-70b-8192", "tokens": 8192, "developer": "Meta"},
+    "llama3-8b-8192": {"name": "LLaMA3-8b-8192", "tokens": 8192, "developer": "Meta"},
+    "mixtral-8x7b-32768": {"name": "Mixtral-8x7b-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
 }
 
-# Define behaviors
-behaviors = [
-    "Jarvis", 
-    "Funny", 
-    "Teaching Expert", 
-    "Technical Expert", 
-    "Empathetic Listener", 
-    "Energetic Motivator", 
-    "Storyteller", 
-    "Professional"
-]
+col1, col2 = st.columns([1, 1])
+with col1:
+    model_option = st.selectbox(
+        "Choose a model:",
+        options=list(models.keys()),
+        format_func=lambda x: models[x]["name"],
+        index=0  # Default to first model
+    )
 
-# Layout for model and behavior selection
-with st.container():
-    col1, col2 = st.columns([1, 1])
+max_tokens = models[model_option]["tokens"]
 
-    with col1:
-        model_option = st.selectbox(
-            "Choose a model:",
-            options=list(models.keys()),
-            format_func=lambda x: models[x]["name"],
-            index=0  # Default model
-        )
-
-    max_tokens = models[model_option]["tokens"]  # Set max tokens directly
-
-# Reset chat history if model changes
+# Clear chat history if model changes
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
 
-# Behavior selection
-behavior_option = st.selectbox(
-    "Choose the assistant's behavior:",
-    options=behaviors,
-    index=behaviors.index(st.session_state.selected_behavior)
-)
+# Display Chat Messages
+def chat_bubble(role, message):
+    """Formats chat messages with styles based on theme."""
+    if st.session_state.selected_theme == "🌈 Rainbow Neon Mode":
+        return f"""
+        <div style='background: linear-gradient(45deg, #ff0000, #ff7300, #fffc00, #48ff00, #00ffc8, #0048ff, #7a00ff, #ff00d4);
+                    padding: 12px; border-radius: 10px; color: white; margin: 5px 0;
+                    text-shadow: 0px 0px 10px #ffffff; font-weight: bold;'>
+            🤖 <b>Amar's AI:</b> {message}
+        </div>
+        """
+    elif role == "assistant":
+        return f"""
+        <div style='background-color: #007bff; padding: 10px; border-radius: 10px; color: white; margin: 5px 0;'>
+            🤖 <b>Amar's AI:</b> {message}
+        </div>
+        """
+    else:
+        return f"""
+        <div style='background-color: #333333; padding: 10px; border-radius: 10px; color: white; margin: 5px 0;'>
+            👨‍💻 <b>You:</b> {message}
+        </div>
+        """
 
-# Update session state for behavior
-if st.session_state.selected_behavior != behavior_option:
-    st.session_state.selected_behavior = behavior_option
-    st.session_state.messages = []
-
-# Define behavior descriptions
-behavior_map = {
-    "Jarvis": "You are jarvis a creation of Amar, and he designed you with the tone and style of J.A.R.V.I.S. from Iron Man. You are witty, strategic, and technically proficient.",
-    "Funny": "You are a creation of Amar,You are a humorous assistant, responding with jokes, witty remarks, and a lighthearted tone to keep interactions engaging.",
-    "Teaching Expert": "You are a teaching expert created by Amar, capable of breaking down complex concepts into simple, easy-to-understand explanations suitable for all learners.",
-    "Technical Expert": "You are a technical expert created by Amar, providing accurate and detailed insights on advanced technical topics in a concise manner and one fact.",
-    "Empathetic Listener": "You are an empathetic listener  created by Amar, providing support and understanding in a kind, compassionate tone while addressing user concerns.",
-    "Energetic Motivator": "You are an energetic motivator created by Amar, responding with enthusiasm and encouraging words to inspire users to achieve their goals.",
-    "Storyteller": "You are a creative storyteller created by Amar, weaving engaging and imaginative narratives in response to user prompts.",
-    "Professional": "You are a concise and professional assistant created by Amar, delivering clear, efficient, and no-nonsense responses."
-}
-
-# Generate the system message based on selected behavior
-system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
-
-# Display chat history
 for message in st.session_state.messages:
-    avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
-    with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(message["content"])
+    formatted_message = chat_bubble(message["role"], message["content"])
+    st.markdown(formatted_message, unsafe_allow_html=True)
 
-# Function to handle streaming responses
+# Handle Chat Input
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
+    """Yield responses from Groq API."""
     for chunk in chat_completion:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 
-# Chat input and processing
-if prompt := st.chat_input("Enter your prompt here..."):
+if prompt := st.chat_input("Enter your message..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user", avatar='👨‍💻'):
         st.markdown(prompt)
 
-    # Fetch response from Groq API
     try:
         chat_completion = client.chat.completions.create(
             model=model_option,
-            messages=[system_message] + [
+            messages=[{"role": "system", "content": "You are an assistant."}] + [
                 {"role": m["role"], "content": m["content"]} for m in st.session_state.messages
             ],
             max_tokens=max_tokens,
             stream=True
         )
 
-        # Stream response
         with st.chat_message("assistant", avatar="🤖"):
             chat_responses_generator = generate_chat_responses(chat_completion)
             full_response = st.write_stream(chat_responses_generator)
@@ -133,9 +162,5 @@ if prompt := st.chat_input("Enter your prompt here..."):
     except Exception as e:
         st.error(e, icon="🚨")
 
-    # Append response to session state
     if isinstance(full_response, str):
         st.session_state.messages.append({"role": "assistant", "content": full_response})
-    else:
-        combined_response = "\n".join(str(item) for item in full_response)
-        st.session_state.messages.append({"role": "assistant", "content": combined_response})
