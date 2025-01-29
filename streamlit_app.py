@@ -5,27 +5,18 @@ from groq import Groq
 # Set up page configuration
 st.set_page_config(page_icon="🚀", layout="centered", page_title="Let’s Talk with Amar’s AI")
 
-# Initialize session state for Theme Selection
-if "selected_theme" not in st.session_state:
-    st.session_state.selected_theme = "Light Mode"  # Default Theme
-
-# Sidebar Settings
+# Sidebar Settings for Theme Selection
 st.sidebar.title("⚙️ Settings")
-
-theme_options = ["Light Mode", "Dark Mode", "🌈 Rainbow Neon Mode"]
+theme_options = ["Light Mode", "Dark Mode"]
 selected_theme = st.sidebar.radio("Choose Theme:", theme_options)
-
-# Update session state
-st.session_state.selected_theme = selected_theme
 
 # Apply Custom Styles Based on Selected Theme
 def apply_custom_styles():
     """Apply dynamic styles based on theme selection."""
-    if st.session_state.selected_theme == "Dark Mode":
+    if selected_theme == "Dark Mode":
         dark_theme_css = """
         <style>
-            body { background-color: #121212; color: #ffffff; }
-            .stApp { background-color: #121212; }
+            body, .stApp { background-color: #121212; color: #ffffff; }
             .stTextInput, .stTextArea, .stButton {
                 border-radius: 8px; border: 1px solid #ffffff; color: white; background-color: #333333;
             }
@@ -34,36 +25,6 @@ def apply_custom_styles():
         </style>
         """
         st.markdown(dark_theme_css, unsafe_allow_html=True)
-
-    elif st.session_state.selected_theme == "🌈 Rainbow Neon Mode":
-        neon_theme_css = """
-        <style>
-            @keyframes rainbowBG {
-                0% { background-color: #ff0000; }
-                14% { background-color: #ff7300; }
-                28% { background-color: #fffc00; }
-                42% { background-color: #48ff00; }
-                56% { background-color: #00ffc8; }
-                70% { background-color: #0048ff; }
-                84% { background-color: #7a00ff; }
-                100% { background-color: #ff00d4; }
-            }
-            body, .stApp {
-                animation: rainbowBG 10s linear infinite alternate;
-                color: white;
-            }
-            .stTextInput, .stTextArea, .stButton {
-                border-radius: 8px;
-                border: 2px solid white;
-                color: white;
-                background: linear-gradient(45deg, #ff0000, #ff7300, #fffc00, #48ff00, #00ffc8, #0048ff, #7a00ff, #ff00d4);
-                animation: rainbowBG 5s linear infinite alternate;
-            }
-            .stMarkdown h3 { text-shadow: 0px 0px 10px #ffffff; color: #fff; }
-            .stSidebar { background-color: rgba(0, 0, 0, 0.8) !important; }
-        </style>
-        """
-        st.markdown(neon_theme_css, unsafe_allow_html=True)
 
 apply_custom_styles()
 
@@ -79,6 +40,9 @@ if "messages" not in st.session_state:
 
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
+
+if "selected_behavior" not in st.session_state:
+    st.session_state.selected_behavior = "Formal"  # Default behavior
 
 # Model Selection
 models = {
@@ -104,33 +68,37 @@ if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
 
-# Display Chat Messages
-def chat_bubble(role, message):
-    """Formats chat messages with styles based on theme."""
-    if st.session_state.selected_theme == "🌈 Rainbow Neon Mode":
-        return f"""
-        <div style='background: linear-gradient(45deg, #ff0000, #ff7300, #fffc00, #48ff00, #00ffc8, #0048ff, #7a00ff, #ff00d4);
-                    padding: 12px; border-radius: 10px; color: white; margin: 5px 0;
-                    text-shadow: 0px 0px 10px #ffffff; font-weight: bold;'>
-            🤖 <b>Amar's AI:</b> {message}
-        </div>
-        """
-    elif role == "assistant":
-        return f"""
-        <div style='background-color: #007bff; padding: 10px; border-radius: 10px; color: white; margin: 5px 0;'>
-            🤖 <b>Amar's AI:</b> {message}
-        </div>
-        """
-    else:
-        return f"""
-        <div style='background-color: #333333; padding: 10px; border-radius: 10px; color: white; margin: 5px 0;'>
-            👨‍💻 <b>You:</b> {message}
-        </div>
-        """
+# Behavior Options
+behaviors = ["Formal", "Casual", "Funny", "Tech buddy", "Teaching Expert", "Jarvis"]
+behavior_option = st.selectbox(
+    "Choose the assistant's behavior:",
+    options=behaviors,
+    index=behaviors.index(st.session_state.selected_behavior)
+)
 
+# Update behavior in session state
+if st.session_state.selected_behavior != behavior_option:
+    st.session_state.selected_behavior = behavior_option
+    st.session_state.messages = []  # Reset messages on behavior change
+
+# Define behavior system messages
+behavior_map = {
+    "Formal": "You are a creation of Amar. Amar created you. You are an assistant that responds in a formal and professional tone.",
+    "Casual": "You are a creation of Amar. Amar created you. You are an assistant that responds in a casual and friendly tone.",
+    "Funny": "You are a creation of Amar. Amar created you. You are an assistant that responds with humor and lightheartedness.",
+    "Tech buddy": "You are a creation of Amar. Amar created you. You are an assistant focused on providing concise, fascinating, and accurate technical facts about a wide range of topics.",
+    "Teaching Expert": "You are a creation of Amar. Amar created you. You are an assistant that responds as a highly skilled teaching expert, offering clear and detailed explanations.",
+    "Jarvis": "You are a creation of Amar. Amar created you. You are a negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man, combining wit, technical prowess, and strategic reasoning."
+}
+
+# Generate system message for selected behavior
+system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
+
+# Display Chat Messages
 for message in st.session_state.messages:
-    formatted_message = chat_bubble(message["role"], message["content"])
-    st.markdown(formatted_message, unsafe_allow_html=True)
+    avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
+    with st.chat_message(message["role"], avatar=avatar):
+        st.markdown(message["content"])
 
 # Handle Chat Input
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
@@ -148,7 +116,7 @@ if prompt := st.chat_input("Enter your message..."):
     try:
         chat_completion = client.chat.completions.create(
             model=model_option,
-            messages=[{"role": "system", "content": "You are an assistant."}] + [
+            messages=[system_message] + [
                 {"role": m["role"], "content": m["content"]} for m in st.session_state.messages
             ],
             max_tokens=max_tokens,
