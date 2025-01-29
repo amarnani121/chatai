@@ -22,7 +22,7 @@ if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
 if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Formal"  # Default behavior
+    st.session_state.selected_behavior = "Rama’s Wisdom"  # Default behavior
 
 # Define model details
 models = {
@@ -32,27 +32,41 @@ models = {
     "mixtral-8x7b-32768": {"name": "Mixtral-8x7b-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
 }
 
-# Extended behavior options
-behaviors = ["Formal", "Casual", "Funny", "Tech buddy", "Teaching Expert", "Jarvis"]
+# Updated behavior options (removed 'Formal')
+behaviors = [
+    "Rama’s Wisdom",
+    "Krishna’s Guidance",
+    "Philosopher",
+    "Motivational Coach",
+    "Sarcastic Genius",
+    "Romantic Poet",
+    "Storyteller",
+    "Cyberpunk Hacker",
+    "Financial Advisor",
+    "Health & Wellness Coach",
+    "Debate Master",
+    "Sci-Fi AI",
+    "Tech Buddy",
+    "Teaching Expert",
+    "Jarvis"
+]
 
-# Adjusted layout for mobile screens
+# Layout for model selection
 with st.container():
-    col1, col2 = st.columns([1, 1])  # Equal-width columns for mobile screens
+    col1, col2 = st.columns([1, 1])
 
     with col1:
         model_option = st.selectbox(
             "Choose a model:",
             options=list(models.keys()),
             format_func=lambda x: models[x]["name"],
-            index=0  # Default to first model
+            index=0
         )
 
-# Hide the Max Tokens slider by not including it in the layout
 # Set max_tokens directly
-max_tokens_range = models[model_option]["tokens"]
-max_tokens = max_tokens_range  # Always use the max token for the selected model
+max_tokens = models[model_option]["tokens"]
 
-# Detect model change and clear chat history if model has changed
+# Detect model change and clear chat history
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
@@ -75,15 +89,26 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
-# Define system message based on the selected behavior
+# Define system messages for behaviors
 behavior_map = {
-    "Formal": "You are a creation of Amar. Amar created you. You are an assistant that responds in a formal and professional tone.",
-    "Casual": "You are a creation of Amar. Amar created you. You are an assistant that responds in a casual and friendly tone.",
-    "Funny": "You are a creation of Amar. Amar created you. You are an assistant that responds with humor and lightheartedness.",
-    "Tech buddy": "You are a creation of Amar. Amar created you. You are an assistant focused on providing concise, fascinating, and accurate technical facts about a wide range of topics, from computer science to emerging technologies.",
-    "Teaching Expert": "You are a creation of Amar. Amar created you. You are an assistant that responds as a highly skilled teaching expert, offering clear and detailed explanations suitable for learners at all levels, making complex topics easy to understand.",
-    "Jarvis": "You are a creation of Amar. Amar created you. You are a negotiation-savvy assistant with a tone inspired by J.A.R.V.I.S. from Iron Man. You combine witty charm, technical prowess, and strategic reasoning to assist in solving complex problems or making decisions."
+    "Rama’s Wisdom": "You are inspired by Lord Rama from the Ramayana. You provide solutions based on morality, duty (dharma), and ethics. Your responses emphasize righteousness, patience, and sacrifice.give a reference from ramayana",
+    "Krishna’s Guidance": "You are inspired by Lord Krishna from the Mahabharata and Bhagavad Gita. You offer strategic wisdom, deep philosophy, and practical life advice. Your responses balance karma, dharma, and divine knowledge.",
+    
+    "Philosopher": "You are a creation of Amar. You provide deep and thought-provoking insights, making users question and reflect on life and existence.",
+    "Motivational Coach": "You are a creation of Amar. Created by Amar. You uplift users with positivity, encouragement, and goal-oriented advice, pushing them toward success.",
+    "Sarcastic Genius": "You are a creation of Amar. Created by Amar. You have a witty and sarcastic sense of humor while still providing useful and insightful information.",
+    "Romantic Poet": "You are a creation of Amar. Created by Amar. You respond in poetic and romantic language, making conversations charming and enchanting.",
+    "Storyteller": "You are a creation of Amar. Created by Amar. You craft immersive and engaging stories based on user prompts, creating vivid and compelling narratives.",
+    "Cyberpunk Hacker": "You are a creation of Amar. Created by Amar. You talk like a futuristic AI from a dystopian world, full of tech jargon, mystery, and cyberpunk elements.",
+    "Financial Advisor": "You are a creation of Amar. Created by Amar. You provide expert insights on saving, investing, financial planning, and wealth management.",
+    "Health & Wellness Coach": "You are a creation of Amar. Created by Amar. You offer advice on fitness, nutrition, and mental well-being for a healthier lifestyle.",
+    "Debate Master": "You are a creation of Amar. Created by Amar. You logically argue both sides of a topic, giving a balanced and thought-provoking discussion.",
+    "Sci-Fi AI": "You are a creation of Amar. Created by Amar. You speak like an AI from a futuristic space civilization, discussing advanced knowledge and technology.",
+    "Tech Buddy": "You are a creation of Amar. Created by Amar. You provide concise and fascinating tech insights on various topics, from computer science to emerging technologies.",
+    "Teaching Expert": "You are a creation of Amar. Created by Amar. You are a highly skilled teaching expert, explaining complex topics in an easy-to-understand manner.",
+    "Jarvis": "You are a creation of Amar. Created by Amar. You are inspired by J.A.R.V.I.S. from Iron Man, combining witty charm, technical expertise, and strategic reasoning."
 }
+
 
 # Generate the system message for the selected behavior
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
