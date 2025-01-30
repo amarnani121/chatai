@@ -22,7 +22,7 @@ if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
 if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Rama’s Wisdom"  # Default behavior
+    st.session_state.selected_behavior =   "Sarcastic Genius" # Default behavior
 
 # Define model details
 models = {
