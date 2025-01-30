@@ -63,11 +63,11 @@ with st.container():
             label_visibility="collapsed"
         )
 
-# Behavior selection layout (Fixed: Prevents keyboard pop-up)
+# Behavior selection layout (Updated to use st.radio instead of selectbox)
 with st.container():
-    col3, col4 = st.columns([1, 1])  # Ensure similar structure as model selection
-    with col3:
-        behavior_option = st.selectbox(
+    col3 = st.columns([1])
+    with col3[0]:
+        behavior_option = st.radio(
             "Choose the assistant's behavior:",
             options=behaviors,
             index=behaviors.index(st.session_state.selected_behavior),
