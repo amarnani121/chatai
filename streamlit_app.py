@@ -58,20 +58,20 @@ with st.container():
 
     with col1:
         model_option = st.selectbox(
-            "Choose a model:  ℹ️",
+            "Choose a model:",
             options=list(models.keys()),
             format_func=lambda x: models[x]["name"],
             index=1
         )
-        st.markdown("<small>Hover over the model name for more info.</small>", unsafe_allow_html=True)
+        st.markdown('<span style="color: gray;">ℹ️ Hover for more info</span>', unsafe_allow_html=True)
 
     with col2:
         behavior_option = st.selectbox(
-            "Choose the assistant's behavior:  ℹ️",
+            "Choose the assistant's behavior:",
             options=behaviors,
             index=behaviors.index(st.session_state.selected_behavior)
         )
-        st.markdown("<small>Hover over the behavior name for more info.</small>", unsafe_allow_html=True)
+        st.markdown('<span style="color: gray;">ℹ️ Hover for more info</span>', unsafe_allow_html=True)
 
 # Set max_tokens directly
 max_tokens = models[model_option]["tokens"]
@@ -154,7 +154,7 @@ if prompt := st.chat_input("Enter your prompt here..."):
             {"role": "assistant", "content": combined_response}
         )
 
-# Display model and behavior descriptions on hover
+# Add tooltips for model and behavior options
 st.markdown("""
 <style>
     .tooltip {
