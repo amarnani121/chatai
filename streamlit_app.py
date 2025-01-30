@@ -50,7 +50,7 @@ behaviors = [
     "Tech Buddy 💻",
     "Teaching Expert 📚",
     "Jarvis 🤖"
-]v
+]
 
 # Layout for model selection
 with st.container():
