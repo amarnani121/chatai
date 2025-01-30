@@ -21,22 +21,21 @@ if "messages" not in st.session_state:
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
-# Ensure the default behavior is in the list
-default_behavior = "Sarcastic Genius 😏"
-if "selected_behavior" not in st.session_state or st.session_state.selected_behavior not in behaviors:
-    st.session_state.selected_behavior = default_behavior
+if "selected_behavior" not in st.session_state:
+    st.session_state.selected_behavior = "Rama’s Wisdom"  # Default behavior
 
-# Define model details with emojis
+# Define model details
 models = {
-    "gemma2-9b-it": {"name": "Gemma2-9B-IT ⚙️", "tokens": 8192, "developer": "Google"},
-    "llama3-70b-8192": {"name": "LLaMA3-70B-8192 🦙", "tokens": 8192, "developer": "Meta"},
-    "llama3-8b-8192": {"name": "LLaMA3-8B-8192 🦙", "tokens": 8192, "developer": "Meta"},
-    "mixtral-8x7b-32768": {"name": "Mixtral-8x7B-Instruct-v0.1 🛠️", "tokens": 32768, "developer": "Mistral"},
-    "llama-3.2-11b-text-preview": {"name": "Llama-3.2-11B-Text-Preview 🦙", "tokens": 8192, "developer": "Meta"},
-    "llama-3.2-3b-preview": {"name": "Llama-3.2-3B-Preview 🦙", "tokens": 8192, "developer": "Meta"},
-    "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview 🦙", "tokens": 8192, "developer": "Meta"},
+    "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
+    "llama3-70b-8192": {"name": "LLaMA3-70B-8192", "tokens": 8192, "developer": "Meta"},
+    "llama3-8b-8192": {"name": "LLaMA3-8B-8192", "tokens": 8192, "developer": "Meta"},
+    "mixtral-8x7b-32768": {"name": "Mixtral-8x7B-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
+    "llama-3.2-11b-text-preview": {"name": "Llama-3.2-11B-Text-Preview", "tokens": 8192, "developer": "Meta"},
+    "llama-3.2-3b-preview": {"name": "Llama-3.2-3B-Preview", "tokens": 8192, "developer": "Meta"},
+    "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
 }
 
+# Updated behavior options (removed 'Formal')
 # Updated behavior options with emojis
 behaviors = [
     "Rama’s Wisdom 🕉️",
@@ -148,6 +147,12 @@ if prompt := st.chat_input("Enter your prompt here..."):
         st.session_state.messages.append(
             {"role": "assistant", "content": full_response}
         )
+    else:
+        combined_response = "\n".join(str(item) for item in full_response)
+        st.session_state.messages.append(
+            {"role": "assistant", "content": combined_response}
+        )
+
     else:
         combined_response = "\n".join(str(item) for item in full_response)
         st.session_state.messages.append(
