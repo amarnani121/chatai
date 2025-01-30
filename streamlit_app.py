@@ -58,11 +58,20 @@ with st.container():
 
     with col1:
         model_option = st.selectbox(
-            "Choose a model:",
+            "Choose a model:  ℹ️",
             options=list(models.keys()),
             format_func=lambda x: models[x]["name"],
             index=1
         )
+        st.markdown("<small>Hover over the model name for more info.</small>", unsafe_allow_html=True)
+
+    with col2:
+        behavior_option = st.selectbox(
+            "Choose the assistant's behavior:  ℹ️",
+            options=behaviors,
+            index=behaviors.index(st.session_state.selected_behavior)
+        )
+        st.markdown("<small>Hover over the behavior name for more info.</small>", unsafe_allow_html=True)
 
 # Set max_tokens directly
 max_tokens = models[model_option]["tokens"]
@@ -71,13 +80,6 @@ max_tokens = models[model_option]["tokens"]
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
-
-# Add behavior selector
-behavior_option = st.selectbox(
-    "Choose the assistant's behavior:",
-    options=behaviors,
-    index=behaviors.index(st.session_state.selected_behavior)
-)
 
 # Update behavior in session state
 if st.session_state.selected_behavior != behavior_option:
@@ -152,12 +154,37 @@ if prompt := st.chat_input("Enter your prompt here..."):
             {"role": "assistant", "content": combined_response}
         )
 
-# Button to learn more about models and behaviors
-if st.button("Learn More About Models and Behaviors"):
-    st.markdown("### Model Descriptions")
-    for model_key, model_info in models.items():
-        st.markdown(f"**{model_info['name']}** (Developer: {model_info['developer']}, Tokens: {model_info['tokens']})")
-    
-    st.markdown("### Behavior Descriptions")
-    for behavior, description in behavior_map.items():
-        st.markdown(f"**{behavior}**: {description}")
+# Display model and behavior descriptions on hover
+st.markdown("""
+<style>
+    .tooltip {
+        position: relative;
+        display: inline-block;
+        cursor: pointer;
+    }
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 220px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%; /* Position above the text */
+        left: 50%;
+        margin-left: -110px; /* Center the tooltip */
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Add tooltips for model and behavior options
+st.markdown('<div class="tooltip">ℹ️<span class="tooltiptext">Select a model for your chat. Each model has different capabilities.</span></div>', unsafe_allow_html=True)
+st.markdown('<div class="tooltip">ℹ️<span class="tooltiptext">Select a behavior for the assistant. Each behavior influences the tone and style of responses.</span></div>', unsafe_allow_html=True)
