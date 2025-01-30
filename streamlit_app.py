@@ -22,7 +22,7 @@ if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
 if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Rama’s Wisdom"  # Default behavior
+    st.session_state.selected_behavior = "Rama’s Wisdom"
 
 # Define model details
 models = {
@@ -35,7 +35,6 @@ models = {
     "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
 }
 
-# Updated behavior options (removed 'Formal')
 behaviors = [
     "Rama’s Wisdom",
     "Krishna’s Guidance",
@@ -52,51 +51,53 @@ behaviors = [
     "Jarvis"
 ]
 
-# Layout for model selection (Prevent keyboard pop-up)
+# Model selection layout
 with st.container():
     col1, col2 = st.columns([1, 1])
-
     with col1:
         model_option = st.selectbox(
             "Choose a model:",  
             options=list(models.keys()),
             format_func=lambda x: models[x]["name"],
             index=1,
-            label_visibility="collapsed"  # Fix to prevent keyboard pop-up
+            label_visibility="collapsed"
+        )
+
+# Behavior selection layout
+with st.container():
+    col3 = st.columns([1])
+    with col3[0]:
+        behavior_option = st.selectbox(
+            "Choose the assistant's behavior:",
+            options=behaviors,
+            index=behaviors.index(st.session_state.selected_behavior),
+            label_visibility="collapsed",
+            key="behavior_selector"
         )
 
 # Set max_tokens directly
 max_tokens = models[model_option]["tokens"]
 
-# Detect model change and clear chat history
+# Model change detection
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
 
-# Add behavior selector (Prevent keyboard pop-up)
-behavior_option = st.selectbox(
-    "Choose the assistant's behavior:",
-    options=behaviors,
-    index=behaviors.index(st.session_state.selected_behavior),
-    label_visibility="collapsed"  # Fix to prevent keyboard pop-up
-)
-
-# Update behavior in session state
+# Behavior change detection
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
-    st.session_state.messages = []  # Reset messages on behavior change
+    st.session_state.messages = []
 
-# Display chat messages from history
+# Display chat messages
 for message in st.session_state.messages:
     avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
-# Define system messages for behaviors
+# Behavior system messages
 behavior_map = {
     "Rama’s Wisdom": "You are inspired by Lord Rama from the Ramayana. You provide solutions based on morality, duty (dharma), and ethics. Your responses emphasize righteousness, patience, and sacrifice.give a reference from ramayana",
     "Krishna’s Guidance": "You are inspired by Lord Krishna from the Mahabharata and Bhagavad Gita. You offer strategic wisdom, deep philosophy, and practical life advice. Your responses balance karma, dharma, and divine knowledge.",
-    
     "Philosopher": "You provide deep and thought-provoking insights, making users question and reflect on life and existence.",
     "Motivational Coach": "You uplift users with positivity, encouragement, and goal-oriented advice, pushing them toward success.",
     "Sarcastic Genius": "You have a witty and sarcastic sense of humor while still providing useful and insightful information.",
@@ -110,7 +111,6 @@ behavior_map = {
     "Jarvis": "You are inspired by J.A.R.V.I.S. from Iron Man, combining witty charm, technical expertise, and strategic reasoning."
 }
 
-# Generate the system message for the selected behavior
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
@@ -136,7 +136,7 @@ if prompt := st.chat_input("Enter your prompt here..."):
             stream=True
         )
 
-        # Use the generator function with st.write_stream
+        # Stream responses
         with st.chat_message("assistant", avatar="🤖"):
             chat_responses_generator = generate_chat_responses(chat_completion)
             full_response = st.write_stream(chat_responses_generator)
@@ -144,7 +144,7 @@ if prompt := st.chat_input("Enter your prompt here..."):
     except Exception as e:
         st.error(e, icon="🚨")
 
-    # Append the full response to session_state.messages
+    # Append the full response
     if isinstance(full_response, str):
         st.session_state.messages.append(
             {"role": "assistant", "content": full_response}
