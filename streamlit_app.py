@@ -21,8 +21,10 @@ if "messages" not in st.session_state:
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
-if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Sarcastic Genius"
+# Ensure the default behavior is in the list
+default_behavior = "Sarcastic Genius 😏"
+if "selected_behavior" not in st.session_state or st.session_state.selected_behavior not in behaviors:
+    st.session_state.selected_behavior = default_behavior
 
 # Define model details with emojis
 models = {
@@ -76,7 +78,7 @@ if st.session_state.selected_model != model_option:
 behavior_option = st.selectbox(
     "Choose the assistant's behavior:",
     options=behaviors,
-    index=behaviors.index(st.session_state.selected_behavior)
+    index=behaviors.index(st.session_state.selected_behavior) if st.session_state.selected_behavior in behaviors else 0
 )
 
 # Update behavior in session state
