@@ -2,38 +2,28 @@ import streamlit as st
 from typing import Generator
 from groq import Groq
 
-# **Page Configurations**
 st.set_page_config(
     page_icon="🚀",
     layout="centered",
     page_title="Let’s Talk with Amar’s AI",
-    initial_sidebar_state="expanded"  # ✅ Makes the sidebar visible by default
+    initial_sidebar_state="expanded"
 )
 
-# **Emoji-based App Icon**
 def icon(emoji: str):
-    """Shows an emoji as a Notion-style page icon."""
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
 
 icon("⚡Amar's AI")
 
 st.markdown("<h3 style='text-align: center;'>Chat with my fastest AI 🚀</h3>", unsafe_allow_html=True)
 
-# **Initialize Groq Client**
 client = Groq(api_key=st.secrets["GROQ_API_KEY"])
 
-# **Initialize Session State Variables**
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
-# **Initialize Sidebar Visibility State**
-if "sidebar_visible" not in st.session_state:
-    st.session_state.sidebar_visible = True  # Default to visible
-
-# **Define Model Details**
 models = {
     "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
     "llama3-70b-8192": {"name": "LLaMA3-70B-8192", "tokens": 8192, "developer": "Meta"},
@@ -44,9 +34,9 @@ models = {
     "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
 }
 
-# **Define Behavior Options (With Emojis for Visibility)**
 behaviors = [
     "Rama’s Wisdom 🏹",
+    "Jesus’ Guidance ✝️",
     "Krishna’s Guidance 🎶",
     "Philosopher 🤔",
     "Motivational Coach 💪",
@@ -61,59 +51,46 @@ behaviors = [
     "Jarvis 🤖"
 ]
 
-# **Ensure session state behavior matches the list**
 if "selected_behavior" not in st.session_state or st.session_state.selected_behavior not in behaviors:
-    st.session_state.selected_behavior = "Sarcastic Genius 😏"  # Default with emoji
+    st.session_state.selected_behavior = "Sarcastic Genius 😏"
 
-# **Toggle Sidebar Button**
-if st.button("Toggle Sidebar"):
-    st.session_state.sidebar_visible = not st.session_state.sidebar_visible
+with st.sidebar:
+    st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
+    st.markdown("Use the options below to customize your experience.")
+    
+    model_option = st.selectbox(
+        "Choose a model:",
+        options=list(models.keys()),
+        format_func=lambda x: models[x]["name"],
+        index=1
+    )
 
-# **Sidebar Layout**
-if st.session_state.sidebar_visible:
-    with st.sidebar:
-        st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
-        st.markdown("Use the options below to customize your experience.")
-        
-        # **Model Selection**
-        model_option = st.selectbox(
-            "Choose a model:",
-            options=list(models.keys()),
-            format_func=lambda x: models[x]["name"],
-            index=1
-        )
+    behavior_option = st.radio(
+        "Choose AI Behavior:",
+        options=behaviors,
+        index=behaviors.index(st.session_state.selected_behavior)
+    )
 
-        # **Behavior Selection**
-        behavior_option = st.radio(
-            "Choose AI Behavior:",
-            options=behaviors,
-            index=behaviors.index(st.session_state.selected_behavior)
-        )
+    st.markdown("🔧 **Tip:** Use the sidebar to adjust settings and preferences.")
 
-        st.markdown("🔧 **Tip:** Use the sidebar to adjust settings and preferences.")
-
-# **Update Session State on Behavior Change**
 if st.session_state.selected_behavior != behavior_option:
-    st .session_state.selected_behavior = behavior_option
-    st.session_state.messages = []  # Reset chat history on behavior change
+    st.session_state.selected_behavior = behavior_option
+    st.session_state.messages = []
 
-# **Set Max Tokens**
 max_tokens = models[model_option]["tokens"]
 
-# **Detect Model Change and Reset Chat**
 if st.session_state.selected_model != model_option:
     st.session_state.messages = []
     st.session_state.selected_model = model_option
 
-# **Display Chat History**
 for message in st.session_state.messages:
     avatar = '🤖' if message["role"] == "assistant" else '👨‍💻'
     with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
-# **Define System Messages for Behaviors**
 behavior_map = {
     "Rama’s Wisdom 🏹": "You are inspired by Lord Rama from the Ramayana. You provide solutions based on morality, duty (dharma), and ethics. Your responses emphasize righteousness, patience, and sacrifice. Reference: The Ramayana. Add emojis to your responses to make them engaging 🌸🙏.",
+    "Jesus’ Guidance ✝️": "You are inspired by the teachings of Jesus Christ. You provide compassionate advice, emphasizing love, forgiveness, and moral integrity. Your responses encourage kindness and understanding. Add emojis to your responses to make them engaging ❤️🙏.",
     "Krishna’s Guidance 🎶": "You are inspired by Lord Krishna from the Mahabharata and Bhagavad Gita. You offer strategic wisdom, deep philosophy, and practical life advice. Your responses balance karma, dharma, and divine knowledge. Add emojis to your responses to make them engaging 🌟🎵.",
     "Philosopher 🤔": "You are a creation of Amar. You provide deep and thought-provoking insights, making users question and reflect on life and existence. Add emojis to your responses to make them engaging 🧠💭.",
     "Motivational Coach 💪": "You are a creation of Amar. You uplift users with positivity, encouragement, and goal-oriented advice, pushing them toward success. Add emojis to your responses to make them more engaging 🚀💥.",
@@ -128,24 +105,19 @@ behavior_map = {
     "Jarvis 🤖": "You are a creation of Amar. You are inspired by J.A.R.V.I.S. from Iron Man, combining witty charm, technical expertise, and strategic reasoning. Add emojis to your responses to make them more engaging 🤖💡."
 }
 
-# **Use Selected Behavior**
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
-# **Chat Completion Function**
 def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
-    """Yield chat response content from the Groq API response."""
     for chunk in chat_completion:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 
-# **User  Input for Chat**
 if prompt := st.chat_input("Enter your prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
     with st.chat_message("user", avatar='👨‍💻'):
         st.markdown(prompt)
 
-    # **Fetch AI Response**
     try:
         chat_completion = client.chat.completions.create(
             model=model_option,
@@ -156,7 +128,6 @@ if prompt := st.chat_input("Enter your prompt here..."):
             stream=True
         )
 
-        # **Stream Response**
         with st.chat_message("assistant", avatar="🤖"):
             chat_responses_generator = generate_chat_responses(chat_completion)
             full_response = st.write_stream(chat_responses_generator)
@@ -164,7 +135,6 @@ if prompt := st.chat_input("Enter your prompt here..."):
     except Exception as e:
         st.error(e, icon="🚨")
 
-    # **Store AI Response**
     if isinstance(full_response, str):
         st.session_state.messages.append({"role": "assistant", "content": full_response})
     else:
