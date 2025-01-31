@@ -9,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.markdown("<div style='text-align: left; font-size: 14px; color: #000800;'>↖️settings</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: left; font-size: 14px; color:#f7fcfa;'>↖️settings</div>", unsafe_allow_html=True)
 
 def icon(emoji: str):
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
@@ -58,7 +58,7 @@ if "selected_behavior" not in st.session_state or st.session_state.selected_beha
 
 with st.sidebar:
     st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
-    st.markdown("Use the options below to customize your experience⤵️.")
+    st.markdown("Use the options below to customize your experience.")
     
     model_option = st.selectbox(
         "Choose a model:",
@@ -74,7 +74,8 @@ with st.sidebar:
     )
 
     st.markdown("🔧 **Tip:** this works well on desktops ⏭")
-    st.markdown("[Click here to visit Amar's AI](https://amareshai.streamlit.app/)")  # Clickable link
+    st.markdown("[Click here to visit Amar's website](https://amareshai.streamlit.app/)") 
+
 
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
