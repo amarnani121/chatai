@@ -77,39 +77,34 @@ behavior_map = {
 }
 
 # **Sidebar Content**
-if st.session_state.sidebar_visible:
-    with st.sidebar:
-        st.markdown("## ⚙️ Sidebar Settings")
+with st.sidebar:
+    st.markdown("## ⚙️ Sidebar Settings")
         
-        # **Model Selection**
-        model_option = st.selectbox(
-            "Choose a model:",
-            options=list(models.keys()),
-            format_func=lambda x: models[x]["name"],
-            index=0
-        )
+    # **Model Selection**
+    model_option = st.selectbox(
+        "Choose a model:",
+        options=list(models.keys()),
+        format_func=lambda x: models[x]["name"],
+        index=0
+    )
 
-        # **Behavior Selection**
-        behavior_option = st.radio(
-            "Choose AI Behavior:",
-            options=behaviors,
-            index=behaviors.index(st.session_state.selected_behavior)
-        )
+    # **Behavior Selection**
+    behavior_option = st.radio(
+        "Choose AI Behavior:",
+        options=behaviors,
+        index=behaviors.index(st.session_state.selected_behavior)
+    )
 
-        # **Update Selections**
-        st.session_state.selected_behavior = behavior_option
-        st.session_state.selected_model = model_option
+    # **Update Selections**
+    st.session_state.selected_behavior = behavior_option
+    st.session_state.selected_model = model_option
 
-        # **Toggle Sidebar Button**
-        if st.button("Collapse Sidebar ⬅️"):
-            st.session_state.sidebar_visible = False
+    # **Toggle Sidebar Button**
+    sidebar_toggle = st.button("Toggle Sidebar", key="sidebar_toggle")
+    if sidebar_toggle:
+        st.session_state.sidebar_visible = not st.session_state.sidebar_visible
 
-else:
-    # **Expand Sidebar Button (Main Section)**
-    if st.button("Expand Sidebar ➡️"):
-        st.session_state.sidebar_visible = True
-
-# **System Message**
+# Update system message after selection change
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
 # **Display Chat History**
