@@ -9,10 +9,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.markdown("<div style='text-align: left; font-size: 14px; color:#f7fcfa;'>↖️settings</div>", unsafe_allow_html=True)
-
 def icon(emoji: str):
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
+
+def collapse_sidebar():
+    st.session_state.sidebar_expanded = not st.session_state.sidebar_expanded
+    st.set_page_config(initial_sidebar_state="expanded" if st.session_state.sidebar_expanded else "collapsed")
+
+if "sidebar_expanded" not in st.session_state:
+    st.session_state.sidebar_expanded = True
+
+with st.sidebar:
+    if st.button("Collapse Sidebar"):
+        collapse_sidebar()
+    
+    st.markdown("<div style='text-align: left; font-size: 14px; color:#f7fcfa;'>↖️settings</div>", unsafe_allow_html=True)
 
 icon("⚡Amar's AI")
 
