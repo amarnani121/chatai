@@ -29,6 +29,10 @@ if "messages" not in st.session_state:
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
+# **Initialize Sidebar Visibility State**
+if "sidebar_visible" not in st.session_state:
+    st.session_state.sidebar_visible = True  # Default to visible
+
 # **Define Model Details**
 models = {
     "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
@@ -61,31 +65,36 @@ behaviors = [
 if "selected_behavior" not in st.session_state or st.session_state.selected_behavior not in behaviors:
     st.session_state.selected_behavior = "Sarcastic Genius 😏"  # Default with emoji
 
+# **Toggle Sidebar Button**
+if st.button("Toggle Sidebar"):
+    st.session_state.sidebar_visible = not st.session_state.sidebar_visible
+
 # **Sidebar Layout**
-with st.sidebar:
-    st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
-    st.markdown("Use the options below to customize your experience.")
-    
-    # **Model Selection**
-    model_option = st.selectbox(
-        "Choose a model:",
-        options=list(models.keys()),
-        format_func=lambda x: models[x]["name"],
-        index=1
-    )
+if st.session_state.sidebar_visible:
+    with st.sidebar:
+        st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
+        st.markdown("Use the options below to customize your experience.")
+        
+        # **Model Selection**
+        model_option = st.selectbox(
+            "Choose a model:",
+            options=list(models.keys()),
+            format_func=lambda x: models[x]["name"],
+            index=1
+        )
 
-    # **Behavior Selection**
-    behavior_option = st.radio(
-        "Choose AI Behavior:",
-        options=behaviors,
-        index=behaviors.index(st.session_state.selected_behavior)
-    )
+        # **Behavior Selection**
+        behavior_option = st.radio(
+            "Choose AI Behavior:",
+            options=behaviors,
+            index=behaviors.index(st.session_state.selected_behavior)
+        )
 
-    st.markdown("🔧 **Tip:** Use the sidebar to adjust settings and preferences.")
+        st.markdown("🔧 **Tip:** Use the sidebar to adjust settings and preferences.")
 
 # **Update Session State on Behavior Change**
 if st.session_state.selected_behavior != behavior_option:
-    st.session_state.selected_behavior = behavior_option
+    st .session_state.selected_behavior = behavior_option
     st.session_state.messages = []  # Reset chat history on behavior change
 
 # **Set Max Tokens**
