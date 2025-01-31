@@ -58,7 +58,6 @@ if "selected_behavior" not in st.session_state or st.session_state.selected_beha
 
 with st.sidebar:
     st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
-    st.markdown("Use the options below to customize your experience.")
     
     model_option = st.selectbox(
         "Choose a model:",
@@ -74,7 +73,7 @@ with st.sidebar:
     )
 
     st.markdown("🔧 **Tip:** this works well on desktops ⏭")
-    st.markdown("[Click here to visit Amar's website](https://amareshai.streamlit.app/)") 
+    st.markdown("[Click here to visit Amar's website](https://amarnani.netlify.app/)") 
 
 
 if st.session_state.selected_behavior != behavior_option:
