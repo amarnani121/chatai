@@ -63,7 +63,8 @@ if "selected_behavior" not in st.session_state or st.session_state.selected_beha
 
 # **Sidebar Layout**
 with st.sidebar:
-    st.markdown("## ⚙️ Settings")
+    st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
+    st.markdown("Use the options below to customize your experience.")
     
     # **Model Selection**
     model_option = st.selectbox(
@@ -79,6 +80,8 @@ with st.sidebar:
         options=behaviors,
         index=behaviors.index(st.session_state.selected_behavior)
     )
+
+    st.markdown("🔧 **Tip:** Use the sidebar to adjust settings and preferences.")
 
 # **Update Session State on Behavior Change**
 if st.session_state.selected_behavior != behavior_option:
@@ -126,7 +129,7 @@ def generate_chat_responses(chat_completion) -> Generator[str, None, None]:
         if chunk.choices[0].delta.content:
             yield chunk.choices[0].delta.content
 
-# **User Input for Chat**
+# **User  Input for Chat**
 if prompt := st.chat_input("Enter your prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
