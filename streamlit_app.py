@@ -71,7 +71,7 @@ with st.sidebar:
         index=behaviors.index(st.session_state.selected_behavior)
     )
 
-    st.markdown("🔧 **Tip:** "this works well on desktops,Use the sidebar to adjust settings and preferences.")
+    st.markdown("🔧 **Tip:** this works well on desktops,Use the sidebar to adjust settings and preferences.")
 
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
