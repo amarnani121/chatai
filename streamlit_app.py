@@ -5,9 +5,9 @@ from groq import Groq
 # **Page Configurations**
 st.set_page_config(
     page_icon="🚀",
-    layout="wide",  # Use wide layout for better sidebar handling
+    layout="wide",  # Wide layout for better sidebar handling
     page_title="Let’s Talk with Amar’s AI",
-    initial_sidebar_state="collapsed"  # Start with sidebar collapsed
+    initial_sidebar_state="expanded"  # Sidebar starts expanded
 )
 
 # **App Icon**
@@ -28,7 +28,7 @@ if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
 if "sidebar_visible" not in st.session_state:
-    st.session_state.sidebar_visible = False
+    st.session_state.sidebar_visible = True  # Sidebar starts expanded by default
 
 # **Models**
 models = {
@@ -76,16 +76,10 @@ behavior_map = {
     "Jarvis 🤖": "You emulate Tony Stark’s J.A.R.V.I.S., combining charm, technical prowess, and strategic thinking.",
 }
 
-# **Sidebar Toggle Button**
-st.sidebar.button(
-    "Toggle Sidebar 🧰", 
-    on_click=lambda: st.session_state.update({"sidebar_visible": not st.session_state.sidebar_visible})
-)
-
 # **Sidebar Content**
 if st.session_state.sidebar_visible:
     with st.sidebar:
-        st.markdown("## ⚙️ Settings")
+        st.markdown("## ⚙️ Sidebar Settings")
         
         # **Model Selection**
         model_option = st.selectbox(
@@ -105,6 +99,15 @@ if st.session_state.sidebar_visible:
         # **Update Selections**
         st.session_state.selected_behavior = behavior_option
         st.session_state.selected_model = model_option
+
+        # **Toggle Sidebar Button**
+        if st.button("Collapse Sidebar ⬅️"):
+            st.session_state.sidebar_visible = False
+
+else:
+    # **Expand Sidebar Button (Main Section)**
+    if st.button("Expand Sidebar ➡️"):
+        st.session_state.sidebar_visible = True
 
 # **System Message**
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
