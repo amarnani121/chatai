@@ -1,5 +1,4 @@
 import streamlit as st
-from typing import Generator
 from groq import Groq
 
 # **Page Configurations**
@@ -25,10 +24,10 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "selected_model" not in st.session_state:
-    st.session_state.selected_model = None
+    st.session_state.selected_model = "gemma2-9b-it"  # Default model
 
-if "sidebar_visible" not in st.session_state:
-    st.session_state.sidebar_visible = True  # Sidebar starts expanded by default
+if "selected_behavior" not in st.session_state:
+    st.session_state.selected_behavior = "Sarcastic Genius 😏"  # Default behavior
 
 # **Models**
 models = {
@@ -54,10 +53,6 @@ behaviors = [
     "Jarvis 🤖"
 ]
 
-# **Default Behavior**
-if "selected_behavior" not in st.session_state:
-    st.session_state.selected_behavior = "Sarcastic Genius 😏"
-
 # **Behavior Map**
 behavior_map = {
     "Rama’s Wisdom 🏹": "You are inspired by Lord Rama from the Ramayana. Provide solutions based on morality, duty (dharma), and ethics.",
@@ -79,7 +74,7 @@ behavior_map = {
 # **Sidebar Content**
 with st.sidebar:
     st.markdown("## ⚙️ Sidebar Settings")
-        
+    
     # **Model Selection**
     model_option = st.selectbox(
         "Choose a model:",
@@ -99,12 +94,7 @@ with st.sidebar:
     st.session_state.selected_behavior = behavior_option
     st.session_state.selected_model = model_option
 
-    # **Toggle Sidebar Button**
-    sidebar_toggle = st.button("Toggle Sidebar", key="sidebar_toggle")
-    if sidebar_toggle:
-        st.session_state.sidebar_visible = not st.session_state.sidebar_visible
-
-# Update system message after selection change
+# **System Message**
 system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
 
 # **Display Chat History**
