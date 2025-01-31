@@ -9,7 +9,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-st.markdown("<div style='text-align: center; font-size: 14px; color: #007bff;'>👉 Click here for settings</div>", unsafe_allow_html=True)
+st.markdown("<div style='text-align: left; font-size: 14px; color: #007bff;'>👉 Click here for settings</div>", unsafe_allow_html=True)
 
 def icon(emoji: str):
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
