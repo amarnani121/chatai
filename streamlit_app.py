@@ -63,9 +63,14 @@ if "selected_behavior" not in st.session_state or st.session_state.selected_beha
 
 # **Sidebar Layout**
 with st.sidebar:
-    st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
+    # **Sidebar Header**
+    st.markdown("<h3 style='text-align: center; color: #4B0082;'>⚙️ Settings</h3>", unsafe_allow_html=True)
     st.markdown("Use the options below to customize your experience.")
     
+    # **Toggle Button for Sidebar**
+    if st.button("Toggle Sidebar"):
+        st.session_state.sidebar_open = not st.session_state.get("sidebar_open", True)
+
     # **Model Selection**
     model_option = st.selectbox(
         "Choose a model:",
@@ -161,3 +166,16 @@ if prompt := st.chat_input("Enter your prompt here..."):
     else:
         combined_response = "\n".join(str(item) for item in full_response)
         st.session_state.messages.append({"role": "assistant", "content": combined_response})
+
+# **Styling for Sidebar Background**
+st.markdown(
+    """
+    <style>
+    div[data-testid='stSidebar'] {
+        background-color: #f0f0f0; /* Light gray background for sidebar */
+        color: #333; /* Dark text color for contrast */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
