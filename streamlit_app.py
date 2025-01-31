@@ -4,12 +4,12 @@ from groq import Groq
 import time
 import json
 
-# **🔹 Streamlit Page Config**
-st.set_page_config(page_icon="🚀", layout="wide", page_title="Let’s Talk with Amar’s AI")
+# **🔹 Streamlit Page Config (Sidebar opens first)**
+st.set_page_config(page_icon="🚀", layout="wide", page_title="Let’s Talk with Amar’s AI", initial_sidebar_state="expanded")
 
-# **🔹 Sidebar UI**
+# **🔹 Sidebar UI (Better Visibility)**
 with st.sidebar:
-    st.title("⚡ Amar's AI Settings")
+    st.title("⚙️ AI Settings")  # More visible sidebar title
     
     # Model Selection
     st.subheader("🤖 Choose a Model")
@@ -22,7 +22,7 @@ with st.sidebar:
     }
     model_option = st.selectbox("Select a model:", options=list(models.keys()), format_func=lambda x: models[x]["name"])
 
-    # Behavior Selection
+    # Behavior Selection (Teaching Expert Default)
     st.subheader("🎭 AI Behaviors")
     behaviors = [
         "Rama’s Wisdom", "Krishna’s Guidance", "Philosopher", "Motivational Coach",
@@ -30,17 +30,12 @@ with st.sidebar:
         "Debate Master", "Sci-Fi AI", "Tech Buddy", "Teaching Expert", "Jarvis"
     ]
 
-    # Initialize Session Variables
-    if "selected_model" not in st.session_state:
-        st.session_state.selected_model = model_option
-
     if "selected_behavior" not in st.session_state:
-        st.session_state.selected_behavior = behaviors[0]  # Default to first behavior
+        st.session_state.selected_behavior = "Teaching Expert"  # Default Behavior
 
-    # Behavior Selection with Safe Index
-    behavior_option = st.radio("Choose behavior:", behaviors, index=behaviors.index(st.session_state.selected_behavior) if st.session_state.selected_behavior in behaviors else 0)
+    behavior_option = st.radio("Choose behavior:", behaviors, index=behaviors.index(st.session_state.selected_behavior))
 
-    # Save Model & Behavior Changes
+    # Save Model & Behavior Selection
     st.session_state.selected_model = model_option
     st.session_state.selected_behavior = behavior_option
 
