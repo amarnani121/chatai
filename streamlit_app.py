@@ -9,21 +9,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-def icon(emoji: str):
-    st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
+if "sidebar_visible" not in st.session_state:
+    st.session_state.sidebar_visible = True
 
-def collapse_sidebar():
-    st.session_state.sidebar_expanded = not st.session_state.sidebar_expanded
-    st.set_page_config(initial_sidebar_state="expanded" if st.session_state.sidebar_expanded else "collapsed")
-
-if "sidebar_expanded" not in st.session_state:
-    st.session_state.sidebar_expanded = True
+def toggle_sidebar():
+    st.session_state.sidebar_visible = not st.session_state.sidebar_visible
 
 with st.sidebar:
-    if st.button("Collapse Sidebar"):
-        collapse_sidebar()
+    if st.button("Toggle Sidebar"):
+        toggle_sidebar()
     
-    st.markdown("<div style='text-align: left; font-size: 14px; color:#f7fcfa;'>↖️settings</div>", unsafe_allow_html=True)
+    if st.session_state.sidebar_visible:
+        st.markdown("<div style='text-align: left; font-size: 14px; color:#f7fcfa;'>↖️settings</div>", unsafe_allow_html=True)
 
 icon("⚡Amar's AI")
 
@@ -68,24 +65,24 @@ if "selected_behavior" not in st.session_state or st.session_state.selected_beha
     st.session_state.selected_behavior = "Sarcastic Genius 😏"
 
 with st.sidebar:
-    st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
-    
-    model_option = st.selectbox(
-        "Choose a model:",
-        options=list(models.keys()),
-        format_func=lambda x: models[x]["name"],
-        index=1
-    )
+    if st.session_state.sidebar_visible:
+        st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
+        
+        model_option = st.selectbox(
+            "Choose a model:",
+            options=list(models.keys()),
+            format_func=lambda x: models[x]["name"],
+            index=1
+        )
 
-    behavior_option = st.radio(
-        "Choose AI Behavior:",
-        options=behaviors,
-        index=behaviors.index(st.session_state.selected_behavior)
-    )
+        behavior_option = st.radio(
+            "Choose AI Behavior:",
+            options=behaviors,
+            index=behaviors.index(st.session_state.selected_behavior)
+        )
 
-    st.markdown("🔧 **Tip:** this works well on desktops ⏭")
-    st.markdown("[Click here to visit Amar's website](https://amarnani.netlify.app/)") 
-
+        st.markdown("🔧 **Tip:** this works well on desktops ⏭")
+        st.markdown("[Click here to visit Amar's website](https://amarnani.netlify.app/)") 
 
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
