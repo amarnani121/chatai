@@ -73,8 +73,7 @@ with st.sidebar:
     )
 
     st.markdown("🔧 **Tip:** this works well on desktops ⏭")
-    st.markdown("[Click here to visit Amar's website](https://amarnani.netlify.app/)") 
-
+ 
 
 if st.session_state.selected_behavior != behavior_option:
     st.session_state.selected_behavior = behavior_option
