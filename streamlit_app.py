@@ -7,7 +7,7 @@ st.set_page_config(
     page_icon="🚀",
     layout="centered",
     page_title="Let’s Talk with Amar’s AI",
-    initial_sidebar_state="expanded"  # Sidebar starts open by default
+    initial_sidebar_state="collapsed"  # Start with sidebar collapsed
 )
 
 # **Emoji-based App Icon**
@@ -16,6 +16,7 @@ def icon(emoji: str):
     st.markdown(f'<div style="text-align: center;"><span style="font-size: 60px; line-height: 1">{emoji}</span></div>', unsafe_allow_html=True)
 
 icon("⚡Amar's AI")
+
 st.markdown("<h3 style='text-align: center;'>Chat with my fastest AI 🚀</h3>", unsafe_allow_html=True)
 
 # **Initialize Groq Client**
@@ -28,6 +29,9 @@ if "messages" not in st.session_state:
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
+if "sidebar_visible" not in st.session_state:
+    st.session_state.sidebar_visible = False  # Sidebar starts hidden
+
 # **Define Model Details**
 models = {
     "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
@@ -39,7 +43,7 @@ models = {
     "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
 }
 
-# **Define Behavior Options**
+# **Define Behavior Options (With Emojis for Visibility)**
 behaviors = [
     "Rama’s Wisdom 🏹",
     "Jesus’ Compassion ✝️",
@@ -53,45 +57,50 @@ behaviors = [
     "Debate Master ⚖️",
     "Sci-Fi AI 👽",
     "Tech Buddy 💻",
-    "Teaching Expert 📚",  # Default behavior
+    "Teaching Expert 📚",
     "Jarvis 🤖"
 ]
 
 # **Ensure session state behavior matches the list**
 if "selected_behavior" not in st.session_state or st.session_state.selected_behavior not in behaviors:
-    st.session_state.selected_behavior = "Teaching Expert 📚"  # Default behavior
+    st.session_state.selected_behavior = "Sarcastic Genius 😏"  # Default with emoji
 
-# **Sidebar Layout**
-with st.sidebar:
-    st.markdown("## ⚙️ Settings")  # Text for better visibility
+# **Sidebar Toggle Button**
+if st.button("Toggle Sidebar 🧰"):
+    st.session_state.sidebar_visible = not st.session_state.sidebar_visible
 
-    # **Model Selection**
-    model_option = st.selectbox(
-        "Choose a model:",
-        options=list(models.keys()),
-        format_func=lambda x: models[x]["name"],
-        index=1
-    )
+# **Sidebar Content**
+if st.session_state.sidebar_visible:
+    with st.sidebar:
+        st.markdown("## ⚙️ Settings")
+        
+        # **Model Selection**
+        model_option = st.selectbox(
+            "Choose a model:",
+            options=list(models.keys()),
+            format_func=lambda x: models[x]["name"],
+            index=1
+        )
 
-    # **Behavior Selection**
-    behavior_option = st.radio(
-        "Choose AI Behavior:",
-        options=behaviors,
-        index=behaviors.index(st.session_state.selected_behavior)
-    )
+        # **Behavior Selection**
+        behavior_option = st.radio(
+            "Choose AI Behavior:",
+            options=behaviors,
+            index=behaviors.index(st.session_state.selected_behavior)
+        )
 
-# **Update Session State on Behavior Change**
-if st.session_state.selected_behavior != behavior_option:
-    st.session_state.selected_behavior = behavior_option
-    st.session_state.messages = []  # Reset chat history on behavior change
+        # **Update Session State on Behavior Change**
+        if st.session_state.selected_behavior != behavior_option:
+            st.session_state.selected_behavior = behavior_option
+            st.session_state.messages = []  # Reset chat history on behavior change
 
-# **Set Max Tokens**
-max_tokens = models[model_option]["tokens"]
+        # **Set Max Tokens**
+        max_tokens = models[model_option]["tokens"]
 
-# **Detect Model Change and Reset Chat**
-if st.session_state.selected_model != model_option:
-    st.session_state.messages = []
-    st.session_state.selected_model = model_option
+        # **Detect Model Change and Reset Chat**
+        if st.session_state.selected_model != model_option:
+            st.session_state.messages = []
+            st.session_state.selected_model = model_option
 
 # **Display Chat History**
 for message in st.session_state.messages:
