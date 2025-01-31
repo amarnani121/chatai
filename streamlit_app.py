@@ -56,7 +56,7 @@ if "selected_behavior" not in st.session_state or st.session_state.selected_beha
 
 with st.sidebar:
     st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
-    st.markdown('↗️ Press here to chat ⤴️ Use the options below to customize your experience.")
+    st.markdown("↗️ Press here to chat ⤴️ Use the options below to customize your experience.")
     
     model_option = st.selectbox(
         "Choose a model:",
