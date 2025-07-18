@@ -54,7 +54,7 @@ behaviors = [
 ]
 
 if "selected_behavior" not in st.session_state or st.session_state.selected_behavior not in behaviors:
-    st.session_state.selected_behavior = "Sarcastic Genius 😏"
+    st.session_state.selected_behavior = "Teaching Expert 📚"
 
 with st.sidebar:
     st.markdown("<h3 style='text-align: center;'>⚙️ Settings</h3>", unsafe_allow_html=True)
