@@ -49,27 +49,23 @@ models = {
     },
     "moonshotai/kimi-k2-instruct": {
         "name": "Kimi-K2-Instruct",
-        "tokens": 131072,
+        "tokens":  16384,,
         "developer": "Moonshot AI"
     },
-    "mistral-saba-24b": {
-        "name": "Mistral-Saba-24B",
-        "tokens": 32768,
-        "developer": "Mistral AI"
-    },
+    
     "qwen/qwen3-32b": {
         "name": "Qwen-3-32B",
-        "tokens": 131072,
+        "tokens": 40960,
         "developer": "Alibaba Cloud"
     },
     "meta-llama/llama-4-maverick-17b-128e-instruct": {
         "name": "Llama-4-Maverick-17B-128E-Instruct",
-        "tokens": 131072,
+        "tokens":  8192,
         "developer": "Meta"
     },
     "meta-llama/llama-4-scout-17b-16e-instruct": {
         "name": "Llama-4-Scout-17B-16E-Instruct",
-        "tokens": 131072,
+        "tokens":  8192,
         "developer": "Meta"
     }
 }
