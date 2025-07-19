@@ -33,7 +33,40 @@ models = {
     "mixtral-8x7b-32768": {"name": "Mixtral-8x7B-Instruct-v0.1", "tokens": 32768, "developer": "Mistral"},
     "llama-3.2-11b-text-preview": {"name": "Llama-3.2-11B-Text-Preview", "tokens": 8192, "developer": "Meta"},
     "llama-3.2-3b-preview": {"name": "Llama-3.2-3B-Preview", "tokens": 8192, "developer": "Meta"},
-    "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},
+    "llama-3.2-1b-preview": {"name": "Llama-3.2-1B-Preview", "tokens": 8192, "developer": "Meta"},"distil-whisper-large-v3-en": {
+  name: "distil‑whisper‑large‑v3‑en",
+  tokens: null,
+  developer: "Hugging Face"
+},
+"gemma2-9b-it": {
+  name: "Gemma2‑9B‑IT",
+  tokens: 8192,
+  developer: "Google"
+},
+"llama-3.1-8b-instant": {
+  name: "Llama‑3.1‑8B‑Instant",
+  tokens: 131072,
+  developer: "Meta"
+},
+"llama-3.3-70b-versatile": {
+  name: "Llama‑3.3‑70B‑Versatile",
+  tokens: 131072,
+  developer: "Meta"
+},
+"meta-llama/llama-guard-4-12b": {
+  name: "Meta‑Llama/Guard‑4‑12B",
+  tokens: 131072,
+  developer: "Meta"
+},
+"whisper-large-v3": {
+  name: "Whisper‑Large‑V3",
+  tokens: null,
+  developer: "OpenAI"
+},
+"whisper-large-v3-turbo": {
+  name: "Whisper‑Large‑V3‑Turbo",
+  tokens: null,
+  developer: "OpenAI"
 }
 
 behaviors = [
