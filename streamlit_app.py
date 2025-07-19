@@ -39,7 +39,7 @@ models = {
     },
     "llama-3.3-70b-versatile": {
         "name": "Llama-3.3-70B-Versatile",
-        "tokens": 131072,
+        "tokens": 31072,
         "developer": "Meta"
     },
     "deepseek-r1-distill-llama-70b": {
