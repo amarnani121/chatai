@@ -68,6 +68,8 @@ models = {
   tokens: null,
   developer: "OpenAI"
 }
+    }
+
 
 behaviors = [
     "Rama’s Wisdom 🏹",
