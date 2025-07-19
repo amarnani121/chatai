@@ -49,7 +49,7 @@ models = {
     },
     "moonshotai/kimi-k2-instruct": {
         "name": "Kimi-K2-Instruct",
-        "tokens":  16384,,
+        "tokens":  16384,
         "developer": "Moonshot AI"
     },
     
