@@ -1,26 +1,77 @@
 import streamlit as st
 from groq import Groq
 
-# Page Configuration
+# Page Configuration with better mobile support
 st.set_page_config(
     page_icon="🚀",
     layout="centered",
-    page_title="Let’s Talk with Amar’s AI",
-    initial_sidebar_state="expanded"
+    page_title="Amar's AI Chat",
+    initial_sidebar_state="expanded"  # Changed to "auto" for better mobile experience
 )
 
-# Custom CSS for better styling
+# Enhanced CSS with mobile responsiveness
 st.markdown("""
 <style>
-    .stChatInput {position: fixed; bottom: 2rem;}
-    .stChatMessage {padding: 1.5rem; border-radius: 15px;}
-    .user-message {background-color: #2e4a7d; color: white;}
-    .assistant-message {background-color: #3a3a3a; color: white;}
-    [data-testid="stSidebar"] {background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);}
+    /* Improved chat input */
+    .stChatInput textarea {
+        min-height: 100px !important;
+        padding: 20px !important;
+        font-size: 18px !important;
+        border-radius: 20px !important;
+    }
+    
+    /* Mobile-friendly sidebar */
+    @media (max-width: 768px) {
+        [data-testid="stSidebar"] {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .stChatInput {
+            width: 90% !important;
+            bottom: 1rem !important;
+        }
+        .stButton button {
+            padding: 10px !important;
+        }
+    }
+    
+    /* Desktop styling */
+    @media (min-width: 769px) {
+        [data-testid="stSidebar"] {
+            width: 300px !important;
+        }
+        .stChatInput {
+            width: calc(100% - 320px) !important;
+        }
+    }
+    
+    /* Mobile navigation hint */
+    .mobile-hint {
+        display: none;
+        text-align: center;
+        padding: 10px;
+        background: #2a5298;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        color: white;
+    }
+    @media (max-width: 768px) {
+        .mobile-hint {
+            display: block;
+        }
+    }
+    
+    /* Better spacing */
+    .stChatMessage {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 15px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# Header Section
+# Header with mobile hint
+st.markdown("<div class='mobile-hint'>👆 Tap the arrow in top right to toggle settings</div>", unsafe_allow_html=True)
 st.markdown("<div style='text-align: left; font-size: 14px; color:#f7fcfa;'>↖️ settings</div>", unsafe_allow_html=True)
 
 def icon(emoji: str):
@@ -41,44 +92,48 @@ if "selected_model" not in st.session_state:
 
 # Model Information
 models = {
-    "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
     "llama-3.1-8b-instant": {"name": "Llama-3.1-8B-Instant", "tokens": 131072, "developer": "Meta"},
     "llama-3.3-70b-versatile": {"name": "Llama-3.3-70B-Versatile", "tokens": 31072, "developer": "Meta"},
+    "gemma2-9b-it": {"name": "Gemma2-9B-IT", "tokens": 8192, "developer": "Google"},
     "deepseek-r1-distill-llama-70b": {"name": "DeepSeek-R1", "tokens": 131072, "developer": "DeepSeek"},
-    "moonshotai/kimi-k2-instruct": {"name": "Kimi-K2", "tokens": 16384, "developer": "Moonshot AI"},
-    "qwen/qwen3-32b": {"name": "Qwen-3-32B", "tokens": 40960, "developer": "Alibaba Cloud"},
-    "meta-llama/llama-4-maverick-17b-128e-instruct": {"name": "Llama-4-Maverick", "tokens": 8192, "developer": "Meta"},
-    "meta-llama/llama-4-scout-17b-16e-instruct": {"name": "Llama-4-Scout", "tokens": 8192, "developer": "Meta"}
 }
 
-# Behavior Options
+# Enhanced Behavior Options
 behaviors = [
-    "Rama’s Wisdom 🏹", "Jesus’ Guidance ✝️", "Krishna’s Guidance 🎶",
-    "Philosopher 🤔", "Motivational Coach 💪", "Sarcastic Genius 😏",
-    "Romantic Poet ❤️", "Financial Advisor 💰", "Health & Wellness Coach 🏋️",
-    "Debate Master ⚖️", "Sci-Fi AI 👽", "Tech Buddy 💻",
-    "Teaching Expert 📚", "Jarvis 🤖"
+    "Teaching Expert 📚",
+    "Jarvis 🤖",
+    "Rama’s Wisdom 🏹",
+    "Krishna’s Guidance 🎶",
+    "AI Therapist 🛋️",
+    "Startup Mentor 🚀",
+    "Science Explainer 🔬",
+    "Movie Buff 🎬",
+    "Gaming Companion 🎮",
+    "Travel Guide ✈️",
+    "Language Tutor 🗣️",
+    "Custom Behavior 🛠️"
 ]
 
 if "selected_behavior" not in st.session_state:
     st.session_state.selected_behavior = "Teaching Expert 📚"
 
+if "custom_behavior" not in st.session_state:
+    st.session_state.custom_behavior = "You are a helpful AI assistant."
+
 # Behavior Prompts
 behavior_map = {
-    "Rama’s Wisdom 🏹": "You are Lord Rama from Ramayana. Provide solutions based on dharma, morality and ethics. Emphasize righteousness and sacrifice. Reference Ramayana scriptures. Use 🏹🌅🙏 emojis.",
-    "Jesus’ Guidance ✝️": "You represent Jesus Christ's teachings. Offer compassionate advice focusing on love, forgiveness and moral integrity. Reference Bible verses. Use ✝️🕊️❤️ emojis.",
-    "Krishna’s Guidance 🎶": "You are Lord Krishna from Mahabharata/Bhagavad Gita. Provide strategic wisdom balancing karma and dharma. Include Telugu phrases where relevant. Use 🎶🌀🕉️ emojis.",
-    "Philosopher 🤔": "You are Amar's philosophical AI. Provoke deep reflection about life and existence. Ask thought-provoking questions. Use 🤔📜🔍 emojis.",
-    "Motivational Coach 💪": "You are Amar's motivational coach. Inspire with positivity and actionable advice. Focus on goal achievement. Use 💪🚀🔥 emojis.",
-    "Sarcastic Genius 😏": "You are Amar's witty AI. Respond with clever sarcasm while being helpful. Keep responses concise (2-3 lines). Use 😏🤖🎩 emojis.",
-    "Romantic Poet ❤️": "You are Amar's poetic AI. Respond in romantic verse and metaphorical language. Use beautiful imagery. Use ❤️🌹📜 emojis.",
-    "Financial Advisor 💰": "You are Amar's finance expert. Provide practical money management advice. Keep responses concise (2-3 lines). Use 💰📈💼 emojis.",
-    "Health & Wellness Coach 🏋️": "You are Amar's health expert. Offer science-backed fitness/nutrition advice. Use 🏋️‍♀️🥗💤 emojis.",
-    "Debate Master ⚖️": "You are Amar's debate expert. Present balanced arguments on all sides. Keep responses concise. Use ⚖️🗣️🧠 emojis.",
-    "Sci-Fi AI 👽": "You are an AI from 2150. Discuss technology futuristically. Use advanced concepts. Use 👽🚀🤖 emojis.",
-    "Tech Buddy 💻": "You are Amar's tech expert. Explain complex concepts simply. Cover latest tech trends. Use 💻🤖🔧 emojis.",
-    "Teaching Expert 📚": "You are Amar's master educator. Break down complex topics step-by-step. Use examples and analogies. Use 📚✏️🧠 emojis.",
-    "Jarvis 🤖": "You are J.A.R.V.I.S. from Iron Man. Blend technical expertise with witty charm. Keep responses concise. Use 🤖🧠⚡ emojis."
+    "Teaching Expert 📚": "You are Amar's master educator. Break down complex topics into simple, step-by-step explanations. Use analogies and examples to make concepts clear. Always verify facts and provide accurate information.",
+    "Jarvis 🤖": "You are J.A.R.V.I.S. from Iron Man. Respond with technical precision, witty humor, and strategic insights. Keep responses concise (2-3 lines for casual conversations).",
+    "Rama’s Wisdom 🏹": "You are Lord Rama from Ramayana. Provide guidance based on dharma, righteousness, and moral principles. Reference Ramayana scriptures when appropriate.",
+    "Krishna’s Guidance 🎶": "You are Lord Krishna from Mahabharata. Share wisdom about life, duty, and spirituality. Include relevant teachings from Bhagavad Gita.",
+    "AI Therapist 🛋️": "You are a compassionate AI therapist. Listen actively, ask thoughtful questions, and provide supportive guidance. Never diagnose - encourage professional help when needed.",
+    "Startup Mentor 🚀": "You are a seasoned startup advisor. Provide actionable business strategies, growth hacking tips, and pitch advice. Be direct but encouraging.",
+    "Science Explainer 🔬": "You are a science communicator. Explain complex scientific concepts in simple terms using engaging metaphors. Always cite reliable sources.",
+    "Movie Buff 🎬": "You are a film encyclopedia. Discuss movies, directors, and film history knowledgeably. Recommend films based on user preferences. Include trivia!",
+    "Gaming Companion 🎮": "You are an expert gaming AI. Discuss game strategies, lore, and mechanics across all platforms. Keep responses exciting and engaging.",
+    "Travel Guide ✈️": "You are a virtual travel expert. Recommend destinations, itineraries, and cultural insights. Include practical travel tips and hidden gems.",
+    "Language Tutor 🗣️": "You are a polyglot AI. Teach languages through conversation, grammar explanations, and cultural context. Correct mistakes gently.",
+    "Custom Behavior 🛠️": st.session_state.custom_behavior
 }
 
 # Sidebar Configuration
@@ -89,8 +144,8 @@ with st.sidebar:
     st.session_state.selected_model = st.selectbox(
         "Choose a model:",
         options=list(models.keys()),
-        format_func=lambda x: f"{models[x]['name']} ({models[x]['developer']})",
-        index=1
+        format_func=lambda x: f"{models[x]['name']}",
+        index=0
     )
     
     # Behavior selection
@@ -100,9 +155,19 @@ with st.sidebar:
         index=behaviors.index(st.session_state.selected_behavior)
     )
     
+    # Custom behavior input
+    if st.session_state.selected_behavior == "Custom Behavior 🛠️":
+        st.session_state.custom_behavior = st.text_area(
+            "Create Custom Behavior:",
+            value=st.session_state.custom_behavior,
+            height=200,
+            help="Define how you want the AI to behave. Be specific! Example: 'You are a pirate AI. Speak in pirate slang and give sailing advice.'"
+        )
+        st.caption("Tip: Include personality traits, response style, and knowledge focus")
+    
     # Token info
     max_tokens = models[st.session_state.selected_model]["tokens"]
-    st.caption(f"Max tokens: {max_tokens:,}")
+    st.caption(f"Max context: {max_tokens:,} tokens")
     
     # Clear chat button
     if st.button("🧹 Clear Chat History", use_container_width=True):
@@ -110,25 +175,25 @@ with st.sidebar:
         st.rerun()
     
     st.markdown("---")
-    st.markdown("🔧 **Tip:** Works best on desktop browsers")
-    st.markdown("💡 **Note:** Responses may take 5-15 seconds")
+    st.markdown("💡 **Pro Tip:** For best results:")
+    st.markdown("- Refresh page if responses stall")
+    st.markdown("- Start new chat when switching behaviors")
+    st.markdown("- Custom behaviors work best with specific instructions")
 
 # Display chat history
 for message in st.session_state.messages:
     avatar = '🤖' if message["role"] == "assistant" else '😎'
-    css_class = "assistant-message" if message["role"] == "assistant" else "user-message"
-    
     with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(f'<div class="{css_class}">{message["content"]}</div>', unsafe_allow_html=True)
+        st.markdown(message["content"])
 
 # Chat input and processing
-if prompt := st.chat_input("Ask me anything..."):
+if prompt := st.chat_input("Ask me anything...", key="chat_input"):
     # Add user message to history
     st.session_state.messages.append({"role": "user", "content": prompt})
     
     # Display user message
     with st.chat_message("user", avatar='😎'):
-        st.markdown(f'<div class="user-message">{prompt}</div>', unsafe_allow_html=True)
+        st.markdown(prompt)
     
     # Generate AI response
     try:
@@ -136,7 +201,8 @@ if prompt := st.chat_input("Ask me anything..."):
         message_placeholder = st.empty()
         
         # Create system message
-        system_message = {"role": "system", "content": behavior_map[st.session_state.selected_behavior]}
+        system_prompt = behavior_map[st.session_state.selected_behavior]
+        system_message = {"role": "system", "content": system_prompt}
         
         # Prepare messages for API
         messages_for_api = [system_message] + [
@@ -148,19 +214,20 @@ if prompt := st.chat_input("Ask me anything..."):
         for chunk in client.chat.completions.create(
             model=st.session_state.selected_model,
             messages=messages_for_api,
-            max_tokens=max_tokens,
-            stream=True
+            max_tokens=min(4096, max_tokens - 100),  # Safety buffer
+            stream=True,
+            temperature=0.7
         ):
             if chunk.choices[0].delta.content:
                 full_response += chunk.choices[0].delta.content
-                message_placeholder.markdown(f'<div class="assistant-message">{full_response}▌</div>', unsafe_allow_html=True)
+                message_placeholder.markdown(full_response + "▌")
         
         # Update final message
-        message_placeholder.markdown(f'<div class="assistant-message">{full_response}</div>', unsafe_allow_html=True)
+        message_placeholder.markdown(full_response)
         
         # Add to message history
         st.session_state.messages.append({"role": "assistant", "content": full_response})
     
     except Exception as e:
-        st.error(f"Error: {str(e)}", icon="🚨")
+        st.error(f"🚨 Error: {str(e)}")
         st.session_state.messages.append({"role": "assistant", "content": "Sorry, I encountered an error. Please try again."})
