@@ -56,7 +56,7 @@ models = {
   },
   "distil-whisper-large-v3-en": {
     "name": "distil-whisper-large-v3-en",
-    "tokens": null,
+    "tokens": 8192,
     "developer": "Hugging Face"
   },
   "llama-3.1-8b-instant": {
@@ -76,12 +76,12 @@ models = {
   },
   "whisper-large-v3": {
     "name": "Whisper-Large-V3",
-    "tokens": null,
+    "tokens": 8192,
     "developer": "OpenAI"
   },
   "whisper-large-v3-turbo": {
     "name": "Whisper-Large-V3-Turbo",
-    "tokens": null,
+    "tokens": 8192,
     "developer": "OpenAI"
   },
   "deepseek-r1-distill-llama-70b": {
