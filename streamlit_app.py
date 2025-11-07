@@ -54,15 +54,21 @@ models = {
     },
     "meta-llama/llama-4-maverick-17b-128e-instruct": {
         "name": "Llama-4-Maverick-17B-128E-Instruct",
-        "tokens":  8192,
+        "tokens": 1000000,
         "developer": "Meta"
     },
     "meta-llama/llama-4-scout-17b-16e-instruct": {
         "name": "Llama-4-Scout-17B-16E-Instruct",
-        "tokens":  8192,
+        "tokens": 10000000,
         "developer": "Meta"
     },
-    'meta-llama/llama-prompt-guard-2-86m'
+    "meta-llama/llama-prompt-guard-2-86m": {
+        "name": "Llama-Prompt-Guard-2-86M",
+        "tokens": 8192,
+        "developer": "Meta"
+    
+}
+
 }
 
 # Updated behaviors list with AI Therapist and Custom Behavior
