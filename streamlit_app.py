@@ -61,13 +61,7 @@ models = {
         "name": "Llama-4-Scout-17B-16E-Instruct",
         "tokens": 8192,
         "developer": "Meta"
-    },
-    "meta-llama/llama-prompt-guard-2-86m": {
-        "name": "Llama-Prompt-Guard-2-86M",
-        "tokens": 512,
-        "developer": "Meta"
-    
-}
+    }
 
 }
 
