@@ -62,6 +62,7 @@ models = {
         "tokens":  8192,
         "developer": "Meta"
     }
+    {meta-llama/llama-prompt-guard-2-86m}
 }
 
 # Updated behaviors list with AI Therapist and Custom Behavior
