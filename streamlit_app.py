@@ -61,8 +61,8 @@ models = {
         "name": "Llama-4-Scout-17B-16E-Instruct",
         "tokens":  8192,
         "developer": "Meta"
-    }
-    {meta-llama/llama-prompt-guard-2-86m}
+    },
+    'meta-llama/llama-prompt-guard-2-86m'
 }
 
 # Updated behaviors list with AI Therapist and Custom Behavior
