@@ -30,11 +30,7 @@ if "custom_behavior" not in st.session_state:
     st.session_state.custom_behavior = "You are a helpful AI assistant."
 
 models = {
-    "gemma2-9b-it": {
-        "name": "Gemma2-9B-IT",
-        "tokens": 8192,
-        "developer": "Google"
-    },
+    
     "llama-3.1-8b-instant": {
         "name": "Llama-3.1-8B-Instant",
         "tokens": 131072,
@@ -45,11 +41,7 @@ models = {
         "tokens": 31072,
         "developer": "Meta"
     },
-    "deepseek-r1-distill-llama-70b": {
-        "name": "DeepSeek-R1-Distill-Llama-70B",
-        "tokens": 131072,
-        "developer": "DeepSeek / Meta"
-    },
+ 
     "moonshotai/kimi-k2-instruct": {
         "name": "Kimi-K2-Instruct",
         "tokens":  16384,
